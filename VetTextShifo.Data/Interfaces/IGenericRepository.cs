@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Linq.Expressions;
 using VetTextShifo.Domain.Commons;
+using VetTextShifo.Domain.Entities;
 
 namespace VetTextShifo.Data.Interfaces;
 
@@ -17,13 +18,13 @@ public interface IGenericRepository<TEntity> where TEntity : Auditable
     /// </summary>
     /// <param name="expression"></param>
     /// <returns></returns>
-    public IQueryable<TEntity> GetAll(Expression<Func<TEntity, bool>>? expression = null);
+    public IQueryable<TEntity> GetAll();
     /// <summary>
     /// Ma`lumotlar bazasidan bizga kerakli malumotni olib beradi
     /// </summary>
     /// <param name="expression"></param>
     /// <returns></returns>
-    public ValueTask<TEntity> GetAsync(Expression<Func<TEntity, bool>>? expression = null);
+    public ValueTask<TEntity> GetAsync(Expression<Func<TEntity,bool>> expression);
     /// <summary>
     /// Kerakli ma`lumotni yangilaydi
     /// </summary>
@@ -35,6 +36,6 @@ public interface IGenericRepository<TEntity> where TEntity : Auditable
     /// </summary>
     /// <param name="id"></param>
     /// <returns></returns>
-    public ValueTask<bool> DeleteAsync(long id);
-    public ValueTask SaveChanges();
+    public ValueTask<bool> DeleteAsync(Expression<Func<TEntity, bool>> expression);
+    public ValueTask SaveChangesAsync(CancellationToken cancellationToken);
 }

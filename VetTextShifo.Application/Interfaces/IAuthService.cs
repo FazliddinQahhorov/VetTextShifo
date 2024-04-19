@@ -1,6 +1,8 @@
-﻿namespace VetTextShifo.Application.Interfaces;
+﻿using VetTextShifo.Domain.Entities;
 
-public class IAuthService
+namespace VetTextShifo.Application.Interfaces;
+
+public interface IAuthService
 {
-
+    Task<string> GenerateToken(Admin user);
 }

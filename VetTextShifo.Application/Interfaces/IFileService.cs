@@ -1,12 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
+﻿using Microsoft.AspNetCore.Http;
+using VetTextShifo.Application.DTOs.Details.Attachments;
 namespace VetTextShifo.Application.Interfaces
 {
-    internal class IAdminService
+    public interface IFileService
     {
+        public Task<List<AttachmentForResponse>> CreateAttachment(AttachmentForRequest attachmentDto, CancellationToken cancellationToken);
+        public Task<AttachmentForResponse> GetForMainPageImage(int id, int languageId);
+        public Task<List<AttachmentForResponse>> GetForByIdImage(int id, int languageId);
     }
 }

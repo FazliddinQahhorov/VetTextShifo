@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace VetTextShifo.Application.Interfaces
 {
-    internal class IAdminService
+    internal class INewsService
     {
     }
 }

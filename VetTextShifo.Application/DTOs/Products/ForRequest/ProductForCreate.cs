@@ -16,5 +16,4 @@ public class ProductForCreate
     public string PaymentType { get; set; }
     public bool PaymentContract { get; set; }
     public string Description { get; set; }
-    public List<IFormFile> attachments { get; set; }
 }

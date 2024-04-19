@@ -46,7 +46,7 @@ namespace VetTextShifo.Data.Migrations
                     b.ToTable("Admins");
                 });
 
-            modelBuilder.Entity("VetTextShifo.Domain.Entities.Attachments.AttachmentProduct", b =>
+            modelBuilder.Entity("VetTextShifo.Domain.Entities.Attachments.AttachmentModel", b =>
                 {
                     b.Property<int>("id")
                         .ValueGeneratedOnAdd()
@@ -62,25 +62,22 @@ namespace VetTextShifo.Data.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<int?>("ProductEngid")
+                    b.Property<int>("ProductEngId")
                         .HasColumnType("integer");
 
-                    b.Property<int>("ProductId")
+                    b.Property<int>("ProductRusId")
                         .HasColumnType("integer");
 
-                    b.Property<int?>("ProductRusid")
-                        .HasColumnType("integer");
-
-                    b.Property<int?>("ProductUzbid")
+                    b.Property<int>("ProductUzbId")
                         .HasColumnType("integer");
 
                     b.HasKey("id");
 
-                    b.HasIndex("ProductEngid");
+                    b.HasIndex("ProductEngId");
 
-                    b.HasIndex("ProductRusid");
+                    b.HasIndex("ProductRusId");
 
-                    b.HasIndex("ProductUzbid");
+                    b.HasIndex("ProductUzbId");
 
                     b.ToTable("AttachmentProducts");
                 });
@@ -516,19 +513,25 @@ namespace VetTextShifo.Data.Migrations
                     b.ToTable("Orders");
                 });
 
-            modelBuilder.Entity("VetTextShifo.Domain.Entities.Attachments.AttachmentProduct", b =>
+            modelBuilder.Entity("VetTextShifo.Domain.Entities.Attachments.AttachmentModel", b =>
                 {
                     b.HasOne("VetTextShifo.Domain.Entities.ProductDetails.Products.ProductEng", null)
                         .WithMany("attachments")
-                        .HasForeignKey("ProductEngid");
+                        .HasForeignKey("ProductEngId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("VetTextShifo.Domain.Entities.ProductDetails.Products.ProductRus", null)
                         .WithMany("attachments")
-                        .HasForeignKey("ProductRusid");
+                        .HasForeignKey("ProductRusId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("VetTextShifo.Domain.Entities.ProductDetails.Products.ProductUzb", null)
                         .WithMany("attachments")
-                        .HasForeignKey("ProductUzbid");
+                        .HasForeignKey("ProductUzbId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("VetTextShifo.Domain.Entities.ProductDetails.Comments", b =>

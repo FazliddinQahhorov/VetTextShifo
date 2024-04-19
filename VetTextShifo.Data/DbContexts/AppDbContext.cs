@@ -10,9 +10,12 @@ namespace VetTextShifo.Data.DbContexts;
 
 public class AppDbContext : DbContext
 {
-    public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) {}
+    public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) 
+    {
+        Database.Migrate();
+    }
 
-    DbSet<AttachmentProduct> AttachmentProducts { get; set; }
+    DbSet<AttachmentModel> AttachmentProducts { get; set; }
     DbSet<Catigory> Catigories { get; set; }
     DbSet<Location> Locations { get; set; }
     DbSet<NewsModelEng> NewsEng { get; set; }

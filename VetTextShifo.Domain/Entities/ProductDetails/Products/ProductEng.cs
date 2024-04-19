@@ -1,4 +1,6 @@
 ﻿namespace VetTextShifo.Domain.Entities.ProductDetails.Products;
+
+using System.Text.Json.Serialization;
 using VetTextShifo.Domain.Commons;
 using VetTextShifo.Domain.Entities.Attachments;
 
@@ -15,7 +17,7 @@ public class ProductEng : Auditable
     public string PaymentType { get; set; }
     public bool PaymentContract { get; set; }
     public string Description { get; set; }
-    public List<AttachmentProduct> attachments { get; set; }
+    public List<AttachmentModel> attachments { get; set; }
     public List<Comments> comments { get; set; }
 
 }

@@ -7,87 +7,70 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace VetTextShifo.Data.Migrations
 {
     /// <inheritdoc />
-    public partial class second : Migration
+    public partial class first : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropForeignKey(
-                name: "FK_AttachmentProducts_Products_ProductId",
-                table: "AttachmentProducts");
-
-            migrationBuilder.DropTable(
-                name: "Attachments");
-
-            migrationBuilder.DropTable(
-                name: "News");
-
-            migrationBuilder.DropTable(
-                name: "Products");
-
-            migrationBuilder.DropIndex(
-                name: "IX_AttachmentProducts_ProductId",
-                table: "AttachmentProducts");
-
-            migrationBuilder.DropColumn(
-                name: "AttachmentId",
-                table: "Locations");
-
-            migrationBuilder.RenameColumn(
-                name: "CatigoryName",
-                table: "Catigories",
-                newName: "Name");
-
-            migrationBuilder.AddColumn<string>(
-                name: "FileName",
-                table: "Locations",
-                type: "text",
-                nullable: false,
-                defaultValue: "");
-
-            migrationBuilder.AddColumn<string>(
-                name: "FilePath",
-                table: "Locations",
-                type: "text",
-                nullable: false,
-                defaultValue: "");
-
-            migrationBuilder.AddColumn<int>(
-                name: "ProductEngid",
-                table: "AttachmentProducts",
-                type: "integer",
-                nullable: true);
-
-            migrationBuilder.AddColumn<int>(
-                name: "ProductRusid",
-                table: "AttachmentProducts",
-                type: "integer",
-                nullable: true);
-
-            migrationBuilder.AddColumn<int>(
-                name: "ProductUzbid",
-                table: "AttachmentProducts",
-                type: "integer",
-                nullable: true);
-
             migrationBuilder.CreateTable(
-                name: "Likes",
+                name: "Admins",
                 columns: table => new
                 {
                     id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    CustomerIP = table.Column<int>(type: "integer", nullable: false),
-                    ProductId = table.Column<int>(type: "integer", nullable: false),
-                    Customerid = table.Column<int>(type: "integer", nullable: true)
+                    email = table.Column<string>(type: "text", nullable: false),
+                    password = table.Column<string>(type: "text", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Likes", x => x.id);
-                    table.ForeignKey(
-                        name: "FK_Likes_Customers_Customerid",
-                        column: x => x.Customerid,
-                        principalTable: "Customers",
-                        principalColumn: "id");
+                    table.PrimaryKey("PK_Admins", x => x.id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Catigories",
+                columns: table => new
+                {
+                    id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Name = table.Column<string>(type: "text", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Catigories", x => x.id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Customers",
+                columns: table => new
+                {
+                    id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    FullName = table.Column<string>(type: "text", nullable: false),
+                    PhoneNumber = table.Column<string>(type: "text", nullable: false),
+                    CreateAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    ProductId = table.Column<int>(type: "integer", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Customers", x => x.id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Locations",
+                columns: table => new
+                {
+                    id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Sity = table.Column<string>(type: "text", nullable: false),
+                    Address = table.Column<string>(type: "text", nullable: false),
+                    Phone = table.Column<string>(type: "text", nullable: false),
+                    Postcode = table.Column<long>(type: "bigint", nullable: false),
+                    FilePath = table.Column<string>(type: "text", nullable: false),
+                    FileName = table.Column<string>(type: "text", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Locations", x => x.id);
                 });
 
             migrationBuilder.CreateTable(
@@ -139,27 +122,6 @@ namespace VetTextShifo.Data.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_NewsUzb", x => x.id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Orders",
-                columns: table => new
-                {
-                    id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    CustomerId = table.Column<int>(type: "integer", nullable: false),
-                    ProductId = table.Column<int>(type: "integer", nullable: false),
-                    CreatedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Orders", x => x.id);
-                    table.ForeignKey(
-                        name: "FK_Orders_Customers_CustomerId",
-                        column: x => x.CustomerId,
-                        principalTable: "Customers",
-                        principalColumn: "id",
-                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -231,6 +193,82 @@ namespace VetTextShifo.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Likes",
+                columns: table => new
+                {
+                    id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    CustomerIP = table.Column<int>(type: "integer", nullable: false),
+                    ProductId = table.Column<int>(type: "integer", nullable: false),
+                    Customerid = table.Column<int>(type: "integer", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Likes", x => x.id);
+                    table.ForeignKey(
+                        name: "FK_Likes_Customers_Customerid",
+                        column: x => x.Customerid,
+                        principalTable: "Customers",
+                        principalColumn: "id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Orders",
+                columns: table => new
+                {
+                    id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    CustomerId = table.Column<int>(type: "integer", nullable: false),
+                    ProductId = table.Column<int>(type: "integer", nullable: false),
+                    CreatedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Orders", x => x.id);
+                    table.ForeignKey(
+                        name: "FK_Orders_Customers_CustomerId",
+                        column: x => x.CustomerId,
+                        principalTable: "Customers",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "AttachmentProducts",
+                columns: table => new
+                {
+                    id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Name = table.Column<string>(type: "text", nullable: false),
+                    Path = table.Column<string>(type: "text", nullable: false),
+                    ProductEngId = table.Column<int>(type: "integer", nullable: false),
+                    ProductRusId = table.Column<int>(type: "integer", nullable: false),
+                    ProductUzbId = table.Column<int>(type: "integer", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AttachmentProducts", x => x.id);
+                    table.ForeignKey(
+                        name: "FK_AttachmentProducts_ProductsEng_ProductEngId",
+                        column: x => x.ProductEngId,
+                        principalTable: "ProductsEng",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_AttachmentProducts_ProductsRus_ProductRusId",
+                        column: x => x.ProductRusId,
+                        principalTable: "ProductsRus",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_AttachmentProducts_ProductsUzb_ProductUzbId",
+                        column: x => x.ProductUzbId,
+                        principalTable: "ProductsUzb",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Comments",
                 columns: table => new
                 {
@@ -264,19 +302,25 @@ namespace VetTextShifo.Data.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_AttachmentProducts_ProductEngid",
-                table: "AttachmentProducts",
-                column: "ProductEngid");
+                name: "IX_Admins_email",
+                table: "Admins",
+                column: "email",
+                unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_AttachmentProducts_ProductRusid",
+                name: "IX_AttachmentProducts_ProductEngId",
                 table: "AttachmentProducts",
-                column: "ProductRusid");
+                column: "ProductEngId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_AttachmentProducts_ProductUzbid",
+                name: "IX_AttachmentProducts_ProductRusId",
                 table: "AttachmentProducts",
-                column: "ProductUzbid");
+                column: "ProductRusId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_AttachmentProducts_ProductUzbId",
+                table: "AttachmentProducts",
+                column: "ProductUzbId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Comments_ProductEngid",
@@ -320,49 +364,28 @@ namespace VetTextShifo.Data.Migrations
                 table: "ProductsUzb",
                 column: "ModelName",
                 unique: true);
-
-            migrationBuilder.AddForeignKey(
-                name: "FK_AttachmentProducts_ProductsEng_ProductEngid",
-                table: "AttachmentProducts",
-                column: "ProductEngid",
-                principalTable: "ProductsEng",
-                principalColumn: "id");
-
-            migrationBuilder.AddForeignKey(
-                name: "FK_AttachmentProducts_ProductsRus_ProductRusid",
-                table: "AttachmentProducts",
-                column: "ProductRusid",
-                principalTable: "ProductsRus",
-                principalColumn: "id");
-
-            migrationBuilder.AddForeignKey(
-                name: "FK_AttachmentProducts_ProductsUzb_ProductUzbid",
-                table: "AttachmentProducts",
-                column: "ProductUzbid",
-                principalTable: "ProductsUzb",
-                principalColumn: "id");
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropForeignKey(
-                name: "FK_AttachmentProducts_ProductsEng_ProductEngid",
-                table: "AttachmentProducts");
+            migrationBuilder.DropTable(
+                name: "Admins");
 
-            migrationBuilder.DropForeignKey(
-                name: "FK_AttachmentProducts_ProductsRus_ProductRusid",
-                table: "AttachmentProducts");
+            migrationBuilder.DropTable(
+                name: "AttachmentProducts");
 
-            migrationBuilder.DropForeignKey(
-                name: "FK_AttachmentProducts_ProductsUzb_ProductUzbid",
-                table: "AttachmentProducts");
+            migrationBuilder.DropTable(
+                name: "Catigories");
 
             migrationBuilder.DropTable(
                 name: "Comments");
 
             migrationBuilder.DropTable(
                 name: "Likes");
+
+            migrationBuilder.DropTable(
+                name: "Locations");
 
             migrationBuilder.DropTable(
                 name: "NewsEng");
@@ -385,115 +408,8 @@ namespace VetTextShifo.Data.Migrations
             migrationBuilder.DropTable(
                 name: "ProductsUzb");
 
-            migrationBuilder.DropIndex(
-                name: "IX_AttachmentProducts_ProductEngid",
-                table: "AttachmentProducts");
-
-            migrationBuilder.DropIndex(
-                name: "IX_AttachmentProducts_ProductRusid",
-                table: "AttachmentProducts");
-
-            migrationBuilder.DropIndex(
-                name: "IX_AttachmentProducts_ProductUzbid",
-                table: "AttachmentProducts");
-
-            migrationBuilder.DropColumn(
-                name: "FileName",
-                table: "Locations");
-
-            migrationBuilder.DropColumn(
-                name: "FilePath",
-                table: "Locations");
-
-            migrationBuilder.DropColumn(
-                name: "ProductEngid",
-                table: "AttachmentProducts");
-
-            migrationBuilder.DropColumn(
-                name: "ProductRusid",
-                table: "AttachmentProducts");
-
-            migrationBuilder.DropColumn(
-                name: "ProductUzbid",
-                table: "AttachmentProducts");
-
-            migrationBuilder.RenameColumn(
-                name: "Name",
-                table: "Catigories",
-                newName: "CatigoryName");
-
-            migrationBuilder.AddColumn<int>(
-                name: "AttachmentId",
-                table: "Locations",
-                type: "integer",
-                nullable: false,
-                defaultValue: 0);
-
-            migrationBuilder.CreateTable(
-                name: "Attachments",
-                columns: table => new
-                {
-                    id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    FileName = table.Column<string>(type: "text", nullable: false),
-                    FilePath = table.Column<string>(type: "text", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Attachments", x => x.id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "News",
-                columns: table => new
-                {
-                    id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    AttachmentId = table.Column<int>(type: "integer", nullable: false),
-                    CreateAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    Description = table.Column<string>(type: "text", nullable: false),
-                    Title = table.Column<string>(type: "text", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_News", x => x.id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Products",
-                columns: table => new
-                {
-                    id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    BrandName = table.Column<string>(type: "text", nullable: false),
-                    Description = table.Column<string>(type: "text", nullable: false),
-                    ExtraDevices = table.Column<string>(type: "text", nullable: false),
-                    GuaranteePeriod = table.Column<string>(type: "text", nullable: false),
-                    MadeIn = table.Column<string>(type: "text", nullable: false),
-                    ModelName = table.Column<string>(type: "text", nullable: false),
-                    PaymentContract = table.Column<bool>(type: "boolean", nullable: false),
-                    PaymentType = table.Column<string>(type: "text", nullable: false),
-                    Produced = table.Column<string>(type: "text", nullable: false),
-                    Service = table.Column<bool>(type: "boolean", nullable: false),
-                    languageId = table.Column<int>(type: "integer", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Products", x => x.id);
-                });
-
-            migrationBuilder.CreateIndex(
-                name: "IX_AttachmentProducts_ProductId",
-                table: "AttachmentProducts",
-                column: "ProductId");
-
-            migrationBuilder.AddForeignKey(
-                name: "FK_AttachmentProducts_Products_ProductId",
-                table: "AttachmentProducts",
-                column: "ProductId",
-                principalTable: "Products",
-                principalColumn: "id",
-                onDelete: ReferentialAction.Cascade);
+            migrationBuilder.DropTable(
+                name: "Customers");
         }
     }
 }

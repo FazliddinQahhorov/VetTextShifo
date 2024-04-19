@@ -2,7 +2,9 @@
 using VetTextShifo.Application.DTOs.Details.Location;
 using VetTextShifo.Application.DTOs.Products.ForRequest;
 using VetTextShifo.Application.DTOs.Products.ForView;
+using VetTextShifo.Application.DTOs.Users.Customer;
 using VetTextShifo.Application.DTOs.Users.Customer.ForView;
+using VetTextShifo.Domain.Entities;
 using VetTextShifo.Domain.Entities.ProductDetails;
 using VetTextShifo.Domain.Entities.ProductDetails.NewsModel;
 using VetTextShifo.Domain.Entities.ProductDetails.Products;
@@ -55,6 +57,12 @@ public class MappingProfile : Profile
         CreateMap<Location, LocationForCreation>().ReverseMap();
         CreateMap<Location, LocationForUpdating>().ReverseMap();
         CreateMap<Location, LocationForView>().ReverseMap();
+
+        //Admin
+        CreateMap<Admin, AdminRequest>().ReverseMap();
+        CreateMap<Admin, AdminChangePassword>().ReverseMap();
+        CreateMap<Admin, AdminRespons>().ReverseMap();
+        CreateMap<AdminRequest, AdminRespons>().ReverseMap();
 
 
 

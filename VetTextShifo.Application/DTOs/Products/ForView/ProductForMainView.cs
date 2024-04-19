@@ -13,5 +13,6 @@ public class ProductForMainView
     public string ExtraDevices { get; set; }
     public string PaymentType { get; set; }
     public bool PaymentContract { get; set; }
-    public string attachment { get; set; }
+    public string FileName { get; set; }
+    public string FilePath { get; set; }
 }

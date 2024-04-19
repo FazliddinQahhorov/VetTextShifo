@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Query.SqlExpressions;
 using System.Linq.Expressions;
 using VetTextShifo.Data.DbContexts;
 using VetTextShifo.Data.Interfaces;
@@ -6,12 +7,12 @@ using VetTextShifo.Domain.Commons;
 
 namespace VetTextShifo.Data.Repositories;
 
-public class Repository<TEntity> : IGenericRepository<TEntity> where TEntity : Auditable
+public class GenericRepository<TEntity> : IGenericRepository<TEntity> where TEntity : Auditable
 {
     private readonly DbContext _dbcontext;
     private readonly DbSet<TEntity> _dbSet;
 
-    public Repository(AppDbContext context)
+    public GenericRepository(AppDbContext context)
     {
         _dbcontext = context;
         _dbSet = context.Set<TEntity>();
@@ -19,39 +20,38 @@ public class Repository<TEntity> : IGenericRepository<TEntity> where TEntity : A
     public async ValueTask<TEntity> CreateAsync(TEntity? entity)
     {
         var entry = await _dbSet.AddAsync(entity);
-        await SaveChanges();
+        
 
         return entry.Entity;
     }
 
-    public async ValueTask<bool> DeleteAsync(long id)
+    public async ValueTask<bool> DeleteAsync(Expression<Func<TEntity, bool>> expression)
     {
-        var isDeleted = await GetAsync(u => u.id == id);
+        var entityToDelete = await _dbSet.SingleOrDefaultAsync(expression);
 
-        if (isDeleted is null)
+        if (entityToDelete != null)
         {
-            return false;
+            _dbSet.Remove(entityToDelete);
+            return true;
         }
-
-        await SaveChanges();
-
-        return true;
+       
+        return false;
     }
 
     public async ValueTask<TEntity> GetAsync(Expression<Func<TEntity, bool>>? expression = null)
     {
-        return await GetAll(expression).FirstOrDefaultAsync();
+        return await GetAll().FirstOrDefaultAsync(expression);
     }
 
-    public IQueryable<TEntity> GetAll(Expression<Func<TEntity, bool>>? expression = null)
+    public IQueryable<TEntity> GetAll()
     {
-        IQueryable<TEntity> query = expression is null ? _dbSet : _dbSet.Where(expression);
+        IQueryable<TEntity> query = _dbSet;
         return query;
     }
 
-    public async ValueTask SaveChanges()
+    public async ValueTask SaveChangesAsync(CancellationToken cancellationToken)
     {
-        await _dbcontext.SaveChangesAsync();
+        await _dbcontext.SaveChangesAsync(cancellationToken);
     }
 
     public async ValueTask<TEntity> UpdateAsync(TEntity? entity)
@@ -59,7 +59,6 @@ public class Repository<TEntity> : IGenericRepository<TEntity> where TEntity : A
         var updating = await GetAsync(i => i.id == entity.id);
 
         _dbSet.Update(updating);
-        await SaveChanges();
 
         return updating;
     }

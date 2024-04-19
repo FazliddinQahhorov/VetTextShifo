@@ -2,9 +2,9 @@
 
 public class CustomException : Exception
 {
-    private  readonly int code;
-    public CustomException(int code,string message) : base(message)
+    public int Code { get; set; }
+    public CustomException(int code, string message) : base(message)
     {
-        this.code = code;
+        Code = code;
     }
 }
