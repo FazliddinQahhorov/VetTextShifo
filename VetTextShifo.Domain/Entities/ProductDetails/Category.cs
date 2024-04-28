@@ -2,7 +2,7 @@
 
 namespace VetTextShifo.Domain.Entities.ProductDetails;
 
-public class Catigory : Auditable
+public class Category : Auditable
 {
     public string Name { get; set; }
 }

@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using VetTextShifo.Data.DbContexts;
@@ -11,9 +12,11 @@ using VetTextShifo.Data.DbContexts;
 namespace VetTextShifo.Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240426095516_ForComment2")]
+    partial class ForComment2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -147,16 +150,14 @@ namespace VetTextShifo.Data.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("id"));
 
-                    b.Property<string>("CustomerIP")
-                        .IsRequired()
-                        .HasColumnType("text");
+                    b.Property<int>("CustomerIP")
+                        .HasColumnType("integer");
 
                     b.Property<int?>("Customerid")
                         .HasColumnType("integer");
 
-                    b.Property<string>("ProductModelName")
-                        .IsRequired()
-                        .HasColumnType("text");
+                    b.Property<int>("ProductId")
+                        .HasColumnType("integer");
 
                     b.HasKey("id");
 
@@ -321,9 +322,6 @@ namespace VetTextShifo.Data.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<int>("LikeCount")
-                        .HasColumnType("integer");
-
                     b.Property<string>("MadeIn")
                         .IsRequired()
                         .HasColumnType("text");
@@ -479,7 +477,11 @@ namespace VetTextShifo.Data.Migrations
                     b.Property<DateTime>("CreateAt")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<string>("CustomerIp")
+                    b.Property<string>("FullName")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("PhoneNumber")
                         .IsRequired()
                         .HasColumnType("text");
 
@@ -504,14 +506,6 @@ namespace VetTextShifo.Data.Migrations
 
                     b.Property<int>("CustomerId")
                         .HasColumnType("integer");
-
-                    b.Property<string>("CustomerName")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("CustomerNumber")
-                        .IsRequired()
-                        .HasColumnType("text");
 
                     b.Property<int>("ProductId")
                         .HasColumnType("integer");

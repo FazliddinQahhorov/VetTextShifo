@@ -4,6 +4,6 @@ namespace VetTextShifo.Domain.Entities.ProductDetails;
 
 public class Likes : Auditable
 {
-    public int CustomerIP { get; set; }
-    public int ProductId { get; set; }
+    public string CustomerIP { get; set; }
+    public string ProductModelName { get; set; }
 }

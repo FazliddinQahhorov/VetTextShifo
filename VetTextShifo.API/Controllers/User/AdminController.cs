@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
 using VetTextShifo.Application.Confugrations;
-using VetTextShifo.Application.DTOs.Users.Customer;
+using VetTextShifo.Application.DTOs.Users.Customer.ForRequest;
 using VetTextShifo.Application.DTOs.Users.Customer.ForView;
 using VetTextShifo.Application.Interfaces;
 

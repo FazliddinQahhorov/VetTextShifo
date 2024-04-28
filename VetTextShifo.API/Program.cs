@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using System.Threading.RateLimiting;
@@ -9,6 +10,7 @@ using VetTextShifo.Application.Mappers;
 using VetTextShifo.Data.DbContexts;
 
 var builder = WebApplication.CreateBuilder(args);
+var MyAllowSpesificOrigins = "_myAllowSpesificOrigins";
 builder.Services.AddAuthentication(options =>
     {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -41,14 +43,25 @@ builder.Services.AddDbContext<AppDbContext>(option => option.UseNpgsql(
 builder.Services.AddAutoMapper(typeof(MappingProfile));
 builder.Services.AddRateLimiter(RateLimiterOptions =>
 {
-    RateLimiterOptions.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
     RateLimiterOptions.AddFixedWindowLimiter("fixed", options =>
     {
-        options.Window = TimeSpan.FromSeconds(10);
         options.PermitLimit = 3;
+        options.Window = TimeSpan.FromSeconds(10);
         options.QueueLimit = 3;
         options.QueueProcessingOrder = QueueProcessingOrder.OldestFirst;
     });
+});
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(MyAllowSpesificOrigins,
+        policy =>
+        {
+            policy.AllowAnyOrigin()
+            .AllowAnyHeader()
+            .AllowAnyMethod();
+        }
+        );
 });
 
 var app = builder.Build();
@@ -60,6 +73,7 @@ if (app.Environment.IsDevelopment() || app.Environment.IsProduction())
     app.UseSwaggerUI();
 }
 
+app.UseCors();
 app.UseAuthentication();
 app.UseAuthorization();
 app.UseRateLimiter();
