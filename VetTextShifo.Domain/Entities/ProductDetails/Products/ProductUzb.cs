@@ -19,6 +19,6 @@ public class ProductUzb : Auditable
     public string Description { get; set; }
     public int LikeCount { get; set; }
     public List<AttachmentModel> attachments { get; set; }
-    public List<Comments> comments { get; set; }
+    public List<Comment> comments { get; set; }
 
 }

@@ -1,14 +1,15 @@
 ﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 using VetTextShifo.Application.Confugrations;
 using VetTextShifo.Application.DTOs.Products.ForRequest;
 using VetTextShifo.Application.DTOs.Products.ForView;
 using VetTextShifo.Application.Exceptions;
+using VetTextShifo.Application.Extansions;
 using VetTextShifo.Application.Interfaces;
 using VetTextShifo.Data.Interfaces;
-using VetTextShifo.Application.Extansions;
+using VetTextShifo.Domain.Entities.ProductDetails;
 using VetTextShifo.Domain.Entities.ProductDetails.Products;
-using VetTextShifo.Domain.Entities.Attachments;
 
 namespace VetTextShifo.Application.Services;
 
@@ -17,6 +18,8 @@ public class ProductService : IProductService
     private readonly IGenericRepository<ProductEng> _repositoryEng;
     private readonly IGenericRepository<ProductRus> _repositoryRus;
     private readonly IGenericRepository<ProductUzb> _repositoryUzb;
+    private readonly IGenericRepository<Category> _categoryRepository;
+    private readonly IGenericRepository<Comment> _commentRepository;
     private readonly IFileService _fileService;
     private readonly IMapper _mapper;
 
@@ -24,13 +27,17 @@ public class ProductService : IProductService
         IGenericRepository<ProductRus> repositoryRus,
         IGenericRepository<ProductUzb> repositoryUzb,
         IMapper mapper,
-        IFileService fileService)
+        IFileService fileService,
+        IGenericRepository<Category> categoryRepository,
+        IGenericRepository<Comment> commentRepository)
     {
         _repositoryEng = repositoryEng;
         _repositoryRus = repositoryRus;
         _repositoryUzb = repositoryUzb;
         _mapper = mapper;
         _fileService = fileService;
+        _categoryRepository = categoryRepository;
+        _commentRepository = commentRepository;
     }
 
 
@@ -42,6 +49,14 @@ public class ProductService : IProductService
         {
             case 1:
                 var productEng = await _repositoryEng.GetAsync(p => p.ModelName == productCreation.ModelName);
+                var category = _categoryRepository.GetAll().Where(p => p.Name == productCreation.BrandName);
+                if (category is null)
+                {
+                    await _categoryRepository.CreateAsync(new Category
+                    {
+                        Name = productCreation.BrandName
+                    });
+                }
                 if (productEng is not null)
                 {
                     throw new CustomException(400, "Product already exsist!");
@@ -51,7 +66,7 @@ public class ProductService : IProductService
                 await _repositoryEng.SaveChangesAsync(cancellationToken);
                 return _mapper.Map<ProductByIdView>(mappedEng);
                 break;
-            case 2 :
+            case 2:
                 var productRus = await _repositoryRus.GetAsync(p => p.ModelName == productCreation.ModelName);
                 if (productRus is not null)
                 {
@@ -77,8 +92,8 @@ public class ProductService : IProductService
                 throw new CustomException(404, "Unknown index language");
                 break;
         }
-       
-        
+
+
     }
 
     public async Task<bool> DeleteAsync(int id,
@@ -107,7 +122,7 @@ public class ProductService : IProductService
     public async Task<IEnumerable<ProductForMainView>> GetAllAsync(int languageId
         , PaginationParams @params)
     {
-        switch(languageId)
+        switch (languageId)
         {
             case 1:
                 var productsEng = _repositoryEng.GetAll().
@@ -115,7 +130,7 @@ public class ProductService : IProductService
                 var soretedListEng = new List<ProductForMainView>();
                 foreach (var item in productsEng)
                 {
-                    var image = await _fileService.GetForMainPageImage(item.id,languageId);
+                    var image = await _fileService.GetForMainPageImage(item.id, languageId);
 
                     var productEng = new ProductForMainView
                     {
@@ -208,16 +223,19 @@ public class ProductService : IProductService
         {
             case 1:
                 var mapEn = _mapper.Map<ProductByIdView>(await _repositoryEng.GetAsync(expressionEng));
+                mapEn.comments = await _commentRepository.GetAll().Where(p => p.ProductModel == mapEn.ModelName).ToListAsync(); 
                 mapEn.Files = await _fileService.GetForByIdImage(mapEn.id, languageId);
                 return mapEn;
                 break;
             case 2:
                 var mapRu = _mapper.Map<ProductByIdView>(await _repositoryEng.GetAsync(expressionEng));
+                mapRu.comments = await _commentRepository.GetAll().Where(p => p.ProductModel == mapRu.ModelName).ToListAsync();
                 mapRu.Files = await _fileService.GetForByIdImage(mapRu.id, languageId);
                 return mapRu;
                 break;
             case 3:
                 var mapUz = _mapper.Map<ProductByIdView>(await _repositoryEng.GetAsync(expressionEng));
+                mapUz.comments = await _commentRepository.GetAll().Where(p => p.ProductModel == mapUz.ModelName).ToListAsync();
                 mapUz.Files = await _fileService.GetForByIdImage(mapUz.id, languageId);
                 return mapUz;
                 break;

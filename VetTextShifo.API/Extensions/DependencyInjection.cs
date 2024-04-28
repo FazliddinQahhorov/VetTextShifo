@@ -1,4 +1,5 @@
-﻿using Microsoft.OpenApi.Models;
+﻿using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.OpenApi.Models;
 using VetTextShifo.Application.Interfaces;
 using VetTextShifo.Application.Services;
 using VetTextShifo.Data.Interfaces;
@@ -16,6 +17,9 @@ public static class DependencyInjection
         services.AddScoped<IAuthService, AuthService>();
         services.AddScoped<IProductService, ProductService>();
         services.AddScoped<IFileService, FileService>();
+        services.AddScoped<ICommentService, CommentService>();
+        services.AddScoped<ILikeService, LikeService>();
+        services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
     }
 
     public static void ConfigureSwagger(this IServiceCollection services)

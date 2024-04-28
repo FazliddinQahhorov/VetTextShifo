@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace VetTextShifo.Application.DTOs.Users.Customer;
+namespace VetTextShifo.Application.DTOs.Users.Customer.ForRequest;
 
 public class AdminRequest
 {

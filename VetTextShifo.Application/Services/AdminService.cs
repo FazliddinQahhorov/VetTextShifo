@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using System.Linq.Expressions;
 using VetTextShifo.Application.Confugrations;
-using VetTextShifo.Application.DTOs.Users.Customer;
+using VetTextShifo.Application.DTOs.Users.Customer.ForRequest;
 using VetTextShifo.Application.DTOs.Users.Customer.ForView;
 using VetTextShifo.Application.Exceptions;
 using VetTextShifo.Application.Extansions;

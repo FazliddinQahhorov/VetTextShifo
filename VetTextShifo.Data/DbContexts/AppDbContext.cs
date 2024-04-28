@@ -16,7 +16,7 @@ public class AppDbContext : DbContext
     }
 
     DbSet<AttachmentModel> AttachmentProducts { get; set; }
-    DbSet<Catigory> Catigories { get; set; }
+    DbSet<Category> Catigories { get; set; }
     DbSet<Location> Locations { get; set; }
     DbSet<NewsModelEng> NewsEng { get; set; }
     DbSet<NewsModelRus> NewsRus { get; set; }
@@ -28,6 +28,7 @@ public class AppDbContext : DbContext
     DbSet<Customer> Customers { get; set; }
     DbSet<Order> Orders { get; set; }
     DbSet<Likes> Likes { get; set; }
+    DbSet<Comment> Comments { get; set; }
 
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)

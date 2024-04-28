@@ -1,9 +1,12 @@
 ﻿using AutoMapper;
 using VetTextShifo.Application.DTOs.Details.Location;
+using VetTextShifo.Application.DTOs.Products.Comments;
 using VetTextShifo.Application.DTOs.Products.ForRequest;
 using VetTextShifo.Application.DTOs.Products.ForView;
-using VetTextShifo.Application.DTOs.Users.Customer;
+using VetTextShifo.Application.DTOs.Users.Customer.ForRequest;
 using VetTextShifo.Application.DTOs.Users.Customer.ForView;
+using VetTextShifo.Application.DTOs.Users.Orders.ForRequest;
+using VetTextShifo.Application.DTOs.Users.Orders.ForView;
 using VetTextShifo.Domain.Entities;
 using VetTextShifo.Domain.Entities.ProductDetails;
 using VetTextShifo.Domain.Entities.ProductDetails.NewsModel;
@@ -63,6 +66,13 @@ public class MappingProfile : Profile
         CreateMap<Admin, AdminChangePassword>().ReverseMap();
         CreateMap<Admin, AdminRespons>().ReverseMap();
         CreateMap<AdminRequest, AdminRespons>().ReverseMap();
+
+        //Comments
+        CreateMap<Comment, CommentForCreate>().ReverseMap();
+
+        //Order
+        CreateMap<Order, OrderForRequest>().ReverseMap();
+        CreateMap<Order, OrderForView>().ReverseMap();
 
 
 
