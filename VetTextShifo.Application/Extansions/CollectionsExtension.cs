@@ -85,4 +85,16 @@ public static class CollectionsExtension
             .Skip((@params.PageIndex - 1) * @params.PageSize).Take(@params.PageSize)
             : throw new CustomException(400, "Please, enter valid numbers");
     }
+    public static IQueryable<Customer> ToPagedListCustomer(this IQueryable<Customer> source, PaginationParams @params)
+    {
+
+        var metaData = new PaginationMetaData(source.Count(), @params);
+        var json = JsonConvert.SerializeObject(metaData);
+
+        return @params.PageIndex > 0 && @params.PageSize > 0 ?
+        source
+            .OrderBy(s => s.id)
+            .Skip((@params.PageIndex - 1) * @params.PageSize).Take(@params.PageSize)
+            : throw new CustomException(400, "Please, enter valid numbers");
+    }
 }

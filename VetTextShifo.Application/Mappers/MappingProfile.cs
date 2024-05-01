@@ -74,6 +74,11 @@ public class MappingProfile : Profile
         CreateMap<Order, OrderForRequest>().ReverseMap();
         CreateMap<Order, OrderForView>().ReverseMap();
 
+        //Customer
+        CreateMap<Customer, CustomerForCreateRequest>().ReverseMap();
+        CreateMap<Customer, CustomerForUpdateRequest>().ReverseMap();
+        CreateMap<Customer, CustomerForView>().ReverseMap();
+
 
 
 

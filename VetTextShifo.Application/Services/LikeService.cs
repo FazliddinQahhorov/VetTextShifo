@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using VetTextShifo.Application.Exceptions;
 using VetTextShifo.Application.Interfaces;
 using VetTextShifo.Data.Interfaces;
 using VetTextShifo.Domain.Entities.ProductDetails;
@@ -25,27 +26,18 @@ public class LikeService : ILikeService
 
     public async Task AddLikeProduct(Likes like, CancellationToken cancellationToken)
     {
+        ProductEng? product = await _productEngRepository.GetAsync(p => p.id == 1);
         Likes? isLiked = await genericRepository.GetAsync(p => p.ProductModelName == like.ProductModelName && 
                                                             p.CustomerIP == like.CustomerIP);
-        var productRus = await _productRusRepository.GetAsync(p => p.ModelName == like.ProductModelName);
-        var productEng = await _productEngRepository.GetAsync(p => p.ModelName == like.ProductModelName);
-        var productUzb = await _productUzbRepository.GetAsync(p => p.ModelName == like.ProductModelName);
-        if (isLiked is not null)
+        if( isLiked is null)
         {
-            productEng.LikeCount -= 1;
-            productRus.LikeCount -= 1;
-            productUzb.LikeCount -= 1;
-
-            await genericRepository.DeleteAsync(p => p.id == like.id);
-            await genericRepository.SaveChangesAsync(cancellationToken);
+            
         }
-
-        productEng.LikeCount += 1;
-        productRus.LikeCount += 1;
-        productUzb.LikeCount += 1;
-
-        await genericRepository.CreateAsync(like);
-        await genericRepository.SaveChangesAsync(cancellationToken);
+            
     }
 
+    public Task RemoveLikeProduct(Likes like, CancellationToken cancellationToken)
+    {
+        throw new NotImplementedException();
+    }
 }
