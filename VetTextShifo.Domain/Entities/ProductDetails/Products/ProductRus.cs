@@ -6,7 +6,6 @@ using VetTextShifo.Domain.Entities.Attachments;
 
 public class ProductRus : Auditable
 {
-    public int id { get; set; }
     public string ModelName { get; set; }
     public string BrandName { get; set; }
     public string GuaranteePeriod { get; set; }

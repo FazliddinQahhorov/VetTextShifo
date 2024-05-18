@@ -375,8 +375,9 @@ public class ProductService : IProductService
                     throw new CustomException(404, "Product not found!");
                 }
                 
-
-                var mappedEng = await _repositoryEng.UpdateAsync(_mapper.Map<ProductEng>(updateProduct));
+                var mappedEng = _mapper.Map<ProductEng>(updateProduct);
+                mappedEng.id = productEng.id;
+                await _repositoryEng.UpdateAsync(mappedEng);
                 await _repositoryEng.SaveChangesAsync(cancellationToken);
                 return true;
                 break;
@@ -386,8 +387,9 @@ public class ProductService : IProductService
                 {
                     throw new CustomException(404, "Product not found!");
                 }
-
-                var mappedRus = await _repositoryRus.UpdateAsync(_mapper.Map<ProductRus>(updateProduct));
+                var mappedRu = _mapper.Map<ProductRus>(updateProduct);
+                mappedRu.id = productRus.id;
+                await _repositoryRus.UpdateAsync(mappedRu);
                 await _repositoryRus.SaveChangesAsync(cancellationToken);
                 return true;
                 break;
@@ -398,8 +400,9 @@ public class ProductService : IProductService
                 {
                     throw new CustomException(404, "Product not found!");
                 }
-
-                var mappedUzb = await _repositoryUzb.UpdateAsync(_mapper.Map<ProductUzb>(updateProduct));
+                var mappedUz = _mapper.Map<ProductUzb>(updateProduct);
+                mappedUz.id = productUzb.id;
+                await _repositoryUzb.UpdateAsync(mappedUz);
                 await _repositoryUzb.SaveChangesAsync(cancellationToken);
                 return true;
                 break;
