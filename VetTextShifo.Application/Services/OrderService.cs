@@ -13,51 +13,57 @@ namespace VetTextShifo.Application.Services;
 
 public class OrderService : IOrderService
 {
-    private readonly IGenericRepository<Order> _oderRepository;
+    private readonly IGenericRepository<Order> _orderRepository;
+    private readonly IGenericRepository<Customer> _customerRepository;
     private readonly IMapper _mapper;
 
-    public OrderService(IGenericRepository<Order> oderRepository, IMapper mapper)
+    public OrderService(IGenericRepository<Order> oderRepository, IMapper mapper,
+        IGenericRepository<Customer> customerRepository)
     {
-        _oderRepository = oderRepository;
+        _orderRepository = oderRepository;
         _mapper = mapper;
+        _customerRepository = customerRepository;
     }
 
-    public async Task<OrderForView> CreateOrder(OrderForRequest orderForCreate, CancellationToken cancellationToken)
+    public async Task<OrderForView> CreateOrder(OrderForRequest orderForCreate,
+        CancellationToken cancellationToken)
     {
-        var order = await _oderRepository.GetAsync(p => p.CustomerNumber == orderForCreate.CustomerNumber &&
-                                                        p.ProductModelName == orderForCreate.ProductModelName);
-        if (order is not null)
+        var order = await _orderRepository.GetAsync(p => p.CustomerNumber == orderForCreate.CustomerNumber &&
+                                                       p.ProductModelName == orderForCreate.ProductModelName);
+
+        if (order != null)
         {
-            throw new CustomException(400, "This order type already sending!");
+            throw new CustomException(400, "This order type already exists!");
         }
 
-        var result = await _oderRepository.CreateAsync(_mapper.Map<Order>(orderForCreate));
-        await _oderRepository.SaveChangesAsync(cancellationToken);
+        // Check if the customer exists
+        var result = await _orderRepository.CreateAsync(_mapper.Map<Order>(orderForCreate));
+        await _orderRepository.SaveChangesAsync(cancellationToken);
         return _mapper.Map<OrderForView>(result);
     }
 
     public async Task<bool> DeleteOrder(int id, CancellationToken cancellationToken)
     {
-        var order = await _oderRepository.GetAsync(p => p.id == id);
+        var order = await _orderRepository.GetAsync(p => p.id == id);
         if (order is null)
         {
             throw new CustomException(404, "This Order not found");
         }
-        await _oderRepository.DeleteAsync(p => p.id == id);
-        await _oderRepository.SaveChangesAsync(cancellationToken);
+        await _orderRepository.DeleteAsync(p => p.id == id);
+        await _orderRepository.SaveChangesAsync(cancellationToken);
         return true;
     }
 
     public async Task<IEnumerable<OrderForView>> GetAllOrders(PaginationParams @params)
     {
-        var orders = _oderRepository.GetAll().
+        var orders = _orderRepository.GetAll().
                    ToPagedListOrders(@params);
         return _mapper.Map<IEnumerable<OrderForView>>(orders);
     }
 
     public async Task<OrderForView> GetOrder(Expression<Func<Order, bool>> order)
     {
-        var getOrder = await _oderRepository.GetAsync(order);
+        var getOrder = await _orderRepository.GetAsync(order);
         if (getOrder is null)
         {
             throw new CustomException(404, "Order not found!");
@@ -66,18 +72,20 @@ public class OrderService : IOrderService
         return _mapper.Map<OrderForView>(getOrder);
     }
 
-    public async Task<OrderForView> UpdateOrder(int id, OrderForRequest orderForUpdate,
+    public async Task<OrderForView> UpdateOrder(OrderForView orderForUpdate,
         CancellationToken cancellationToken)
     {
-        var order = await _oderRepository.GetAsync(p => p.CustomerNumber == orderForUpdate.CustomerNumber &&
-                                                       p.ProductModelName == orderForUpdate.ProductModelName);
-        if (order is not null)
+        var order = await _orderRepository.GetAsync(p => p.id == orderForUpdate.id);
+        if (order is  null)
         {
-            throw new CustomException(400, "This order type already sending!");
+            throw new CustomException(400, "This order not exsist!");
         }
-
-        var result = await _oderRepository.UpdateAsync(_mapper.Map<Order>(orderForUpdate));
-        await _oderRepository.SaveChangesAsync(cancellationToken);
+        order.CustomerNumber = orderForUpdate.CustomerNumber;
+        order.CustomerName = orderForUpdate.CustomerName;
+        order.ProductModelName = orderForUpdate.ProductModelName;
+        order.CreatedDate = DateTime.UtcNow;
+        var result = await _orderRepository.UpdateAsync(order);
+        await _orderRepository.SaveChangesAsync(cancellationToken);
         return _mapper.Map<OrderForView>(result);
     }
 }

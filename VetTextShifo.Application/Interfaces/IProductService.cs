@@ -12,7 +12,7 @@ namespace VetTextShifo.Application.Interfaces;
 public interface IProductService
 {
     public Task<ProductByIdView> CreatAsync(int languageId, ProductForCreate userCreation, CancellationToken cancellationToken);
-    public Task<bool> UpdateAsync(int languageId, ProductForUpdate userPasswordChange, CancellationToken cancellationToken);
+    public Task<bool> UpdateAsync(int languageId, ProductForUpdate productForUpdate, CancellationToken cancellationToken);
     public Task<bool> DeleteAsync(int id, CancellationToken cancellationToken);
     public Task<ProductByIdView> GetAsync(int languageId, Expression<Func<ProductEng, bool>>? expressionEng = null,
            Expression<Func<ProductRus, bool>>? expressionRus = null,

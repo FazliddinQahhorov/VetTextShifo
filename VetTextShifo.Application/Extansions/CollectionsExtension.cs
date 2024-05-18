@@ -4,6 +4,7 @@ using VetTextShifo.Application.Exceptions;
 using VetTextShifo.Domain.Commons;
 using VetTextShifo.Domain.Entities;
 using VetTextShifo.Domain.Entities.ProductDetails;
+using VetTextShifo.Domain.Entities.ProductDetails.NewsModel;
 using VetTextShifo.Domain.Entities.ProductDetails.Products;
 using VetTextShifo.Domain.Entities.Users;
 
@@ -74,6 +75,54 @@ public static class CollectionsExtension
             : throw new CustomException(400, "Please, enter valid numbers");
     }
     public static IQueryable<Order> ToPagedListOrders(this IQueryable<Order> source, PaginationParams @params)
+    {
+
+        var metaData = new PaginationMetaData(source.Count(), @params);
+        var json = JsonConvert.SerializeObject(metaData);
+
+        return @params.PageIndex > 0 && @params.PageSize > 0 ?
+        source
+            .OrderBy(s => s.id)
+            .Skip((@params.PageIndex - 1) * @params.PageSize).Take(@params.PageSize)
+            : throw new CustomException(400, "Please, enter valid numbers");
+    }
+    public static IQueryable<Customer> ToPagedListCustomer(this IQueryable<Customer> source, PaginationParams @params)
+    {
+
+        var metaData = new PaginationMetaData(source.Count(), @params);
+        var json = JsonConvert.SerializeObject(metaData);
+
+        return @params.PageIndex > 0 && @params.PageSize > 0 ?
+        source
+            .OrderBy(s => s.id)
+            .Skip((@params.PageIndex - 1) * @params.PageSize).Take(@params.PageSize)
+            : throw new CustomException(400, "Please, enter valid numbers");
+    }
+    public static IQueryable<NewsModelEng> ToPagedListNewsEng(this IQueryable<NewsModelEng> source, PaginationParams @params)
+    {
+
+        var metaData = new PaginationMetaData(source.Count(), @params);
+        var json = JsonConvert.SerializeObject(metaData);
+
+        return @params.PageIndex > 0 && @params.PageSize > 0 ?
+        source
+            .OrderBy(s => s.id)
+            .Skip((@params.PageIndex - 1) * @params.PageSize).Take(@params.PageSize)
+            : throw new CustomException(400, "Please, enter valid numbers");
+    }
+    public static IQueryable<NewsModelRus> ToPagedListNewsRus(this IQueryable<NewsModelRus> source, PaginationParams @params)
+    {
+
+        var metaData = new PaginationMetaData(source.Count(), @params);
+        var json = JsonConvert.SerializeObject(metaData);
+
+        return @params.PageIndex > 0 && @params.PageSize > 0 ?
+        source
+            .OrderBy(s => s.id)
+            .Skip((@params.PageIndex - 1) * @params.PageSize).Take(@params.PageSize)
+            : throw new CustomException(400, "Please, enter valid numbers");
+    }
+    public static IQueryable<NewsModelUzb> ToPagedListNewsUzb(this IQueryable<NewsModelUzb> source, PaginationParams @params)
     {
 
         var metaData = new PaginationMetaData(source.Count(), @params);

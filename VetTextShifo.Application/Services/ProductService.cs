@@ -8,6 +8,8 @@ using VetTextShifo.Application.Exceptions;
 using VetTextShifo.Application.Extansions;
 using VetTextShifo.Application.Interfaces;
 using VetTextShifo.Data.Interfaces;
+using VetTextShifo.Domain.Entities;
+using VetTextShifo.Domain.Entities.Attachments;
 using VetTextShifo.Domain.Entities.ProductDetails;
 using VetTextShifo.Domain.Entities.ProductDetails.Products;
 
@@ -18,8 +20,8 @@ public class ProductService : IProductService
     private readonly IGenericRepository<ProductEng> _repositoryEng;
     private readonly IGenericRepository<ProductRus> _repositoryRus;
     private readonly IGenericRepository<ProductUzb> _repositoryUzb;
-    private readonly IGenericRepository<Category> _categoryRepository;
     private readonly IGenericRepository<Comment> _commentRepository;
+    private readonly IGenericRepository<AttachmentModel> _attachmentRepository;
     private readonly IFileService _fileService;
     private readonly IMapper _mapper;
 
@@ -28,16 +30,16 @@ public class ProductService : IProductService
         IGenericRepository<ProductUzb> repositoryUzb,
         IMapper mapper,
         IFileService fileService,
-        IGenericRepository<Category> categoryRepository,
-        IGenericRepository<Comment> commentRepository)
+        IGenericRepository<Comment> commentRepository,
+        IGenericRepository<AttachmentModel> attachmentRepository)
     {
         _repositoryEng = repositoryEng;
         _repositoryRus = repositoryRus;
         _repositoryUzb = repositoryUzb;
         _mapper = mapper;
         _fileService = fileService;
-        _categoryRepository = categoryRepository;
         _commentRepository = commentRepository;
+        _attachmentRepository = attachmentRepository;
     }
 
 
@@ -49,14 +51,6 @@ public class ProductService : IProductService
         {
             case 1:
                 var productEng = await _repositoryEng.GetAsync(p => p.ModelName == productCreation.ModelName);
-                var category = _categoryRepository.GetAll().Where(p => p.Name == productCreation.BrandName);
-                if (category is null)
-                {
-                    await _categoryRepository.CreateAsync(new Category
-                    {
-                        Name = productCreation.BrandName
-                    });
-                }
                 if (productEng is not null)
                 {
                     throw new CustomException(400, "Product already exsist!");
@@ -102,6 +96,11 @@ public class ProductService : IProductService
         var productEng = await _repositoryEng.GetAsync(p => p.id == id);
         var productRus = await _repositoryRus.GetAsync(p => p.id == id);
         var productUzb = await _repositoryUzb.GetAsync(p => p.id == id);
+        var folderName = "Resources";
+        var pathToSave = Path.Combine(Directory.GetCurrentDirectory(), folderName);
+        var files = await _attachmentRepository.GetAll().
+            Where(p => p.ProductEngId == productEng.id).
+            ToListAsync();
         if (productEng is null || productRus is null || productUzb is null)
         {
             throw new CustomException(400, "Product not found!");
@@ -113,6 +112,10 @@ public class ProductService : IProductService
         await _repositoryRus.SaveChangesAsync(cancellationToken);
         await _repositoryUzb.DeleteAsync(p => p.id == id);
         await _repositoryUzb.SaveChangesAsync(cancellationToken);
+        foreach(var item in files)
+        {
+            File.Delete(Path.Combine(pathToSave, item.Name));
+        }
 
         return true;
     }
@@ -126,14 +129,16 @@ public class ProductService : IProductService
         {
             case 1:
                 var productsEng = _repositoryEng.GetAll().
-                    ToPagedListProductEng(@params);
+                    ToPagedListProductEng(@params)
+                    .ToList();
                 var soretedListEng = new List<ProductForMainView>();
                 foreach (var item in productsEng)
                 {
                     var image = await _fileService.GetForMainPageImage(item.id, languageId);
 
                     var productEng = new ProductForMainView
-                    {
+                    {   
+                        id = item.id,
                         ModelName = item.ModelName,
                         BrandName = item.BrandName,
                         GuaranteePeriod = item.GuaranteePeriod,
@@ -153,7 +158,8 @@ public class ProductService : IProductService
                 break;
             case 2:
                 var productsRus = _repositoryEng.GetAll().
-                   ToPagedListProductEng(@params);
+                   ToPagedListProductEng(@params)
+                   .ToList();
                 var soretedListRus = new List<ProductForMainView>();
 
                 foreach (var item in productsRus)
@@ -162,6 +168,7 @@ public class ProductService : IProductService
 
                     var productEng = new ProductForMainView
                     {
+                        id = item.id,
                         ModelName = item.ModelName,
                         BrandName = item.BrandName,
                         GuaranteePeriod = item.GuaranteePeriod,
@@ -181,7 +188,8 @@ public class ProductService : IProductService
                 break;
             case 3:
                 var productsUzb = _repositoryEng.GetAll().
-                   ToPagedListProductEng(@params);
+                   ToPagedListProductEng(@params)
+                   .ToList();
                 var soretedListUzb = new List<ProductForMainView>();
 
                 foreach (var item in productsUzb)
@@ -190,6 +198,7 @@ public class ProductService : IProductService
 
                     var productEng = new ProductForMainView
                     {
+                        id = item.id,
                         ModelName = item.ModelName,
                         BrandName = item.BrandName,
                         GuaranteePeriod = item.GuaranteePeriod,
@@ -225,18 +234,21 @@ public class ProductService : IProductService
                 var mapEn = _mapper.Map<ProductByIdView>(await _repositoryEng.GetAsync(expressionEng));
                 mapEn.comments = await _commentRepository.GetAll().Where(p => p.ProductModel == mapEn.ModelName).ToListAsync(); 
                 mapEn.Files = await _fileService.GetForByIdImage(mapEn.id, languageId);
+                mapEn.Rating = 4;
                 return mapEn;
                 break;
             case 2:
-                var mapRu = _mapper.Map<ProductByIdView>(await _repositoryEng.GetAsync(expressionEng));
+                var mapRu = _mapper.Map<ProductByIdView>(await _repositoryRus.GetAsync(expressionRus));
                 mapRu.comments = await _commentRepository.GetAll().Where(p => p.ProductModel == mapRu.ModelName).ToListAsync();
                 mapRu.Files = await _fileService.GetForByIdImage(mapRu.id, languageId);
+                mapRu.Rating = 4;
                 return mapRu;
                 break;
             case 3:
-                var mapUz = _mapper.Map<ProductByIdView>(await _repositoryEng.GetAsync(expressionEng));
+                var mapUz = _mapper.Map<ProductByIdView>(await _repositoryUzb.GetAsync(expressionUzb));
                 mapUz.comments = await _commentRepository.GetAll().Where(p => p.ProductModel == mapUz.ModelName).ToListAsync();
                 mapUz.Files = await _fileService.GetForByIdImage(mapUz.id, languageId);
+                mapUz.Rating = 4;
                 return mapUz;
                 break;
             default:
@@ -253,7 +265,8 @@ public class ProductService : IProductService
             case 1:
                 var productsEng = _repositoryEng.GetAll().
                     ToPagedListProductEng(@params)
-                    .Where(p => p.BrandName == BrandName);
+                    .Where(p => p.BrandName == BrandName).
+                    ToList();
                 var soretedListEng = new List<ProductForMainView>();
                 foreach (var item in productsEng)
                 {
@@ -261,6 +274,7 @@ public class ProductService : IProductService
 
                     var productEng = new ProductForMainView
                     {
+                        id = item.id,
                         ModelName = item.ModelName,
                         BrandName = item.BrandName,
                         GuaranteePeriod = item.GuaranteePeriod,
@@ -281,7 +295,8 @@ public class ProductService : IProductService
             case 2:
                 var productsRus = _repositoryEng.GetAll().
                     ToPagedListProductEng(@params)
-                    .Where(p => p.BrandName == BrandName);
+                    .Where(p => p.BrandName == BrandName).
+                    ToList();
                 var soretedListRus = new List<ProductForMainView>();
 
                 foreach (var item in productsRus)
@@ -290,6 +305,7 @@ public class ProductService : IProductService
 
                     var productEng = new ProductForMainView
                     {
+                        id = item.id,
                         ModelName = item.ModelName,
                         BrandName = item.BrandName,
                         GuaranteePeriod = item.GuaranteePeriod,
@@ -310,7 +326,8 @@ public class ProductService : IProductService
             case 3:
                 var productsUzb = _repositoryEng.GetAll().
                      ToPagedListProductEng(@params)
-                     .Where(p => p.BrandName == BrandName);
+                     .Where(p => p.BrandName == BrandName).
+                     ToList();
 
                 var soretedListUzb = new List<ProductForMainView>();
                 foreach (var item in productsUzb)
@@ -318,7 +335,8 @@ public class ProductService : IProductService
                     var image = await _fileService.GetForMainPageImage(item.id, languageId);
 
                     var productEng = new ProductForMainView
-                    {
+                    {   
+                        id = item.id,
                         ModelName = item.ModelName,
                         BrandName = item.BrandName,
                         GuaranteePeriod = item.GuaranteePeriod,
@@ -346,28 +364,42 @@ public class ProductService : IProductService
         ProductForUpdate updateProduct,
         CancellationToken cancellationToken)
     {
-        var productEng = await _repositoryEng.GetAsync(p => p.ModelName == updateProduct.ModelName);
-        var productRus = await _repositoryRus.GetAsync(p => p.ModelName == updateProduct.ModelName);
-        var productUzb = await _repositoryUzb.GetAsync(p => p.ModelName == updateProduct.ModelName);
-        if (productEng is not null || productRus is not null || productUzb is not null)
-        {
-            throw new CustomException(400, "Product already exsist!");
-        }
+        
 
         switch (languageId)
         {
             case 1:
+                var productEng = await _repositoryEng.GetAsync(p => p.ModelName == updateProduct.ModelName);
+                if (productEng is null)
+                {
+                    throw new CustomException(404, "Product not found!");
+                }
+                
+
                 var mappedEng = await _repositoryEng.UpdateAsync(_mapper.Map<ProductEng>(updateProduct));
                 await _repositoryEng.SaveChangesAsync(cancellationToken);
                 return true;
                 break;
             case 2:
+                var productRus = await _repositoryRus.GetAsync(p => p.ModelName == updateProduct.ModelName);
+                if (productRus is null)
+                {
+                    throw new CustomException(404, "Product not found!");
+                }
+
                 var mappedRus = await _repositoryRus.UpdateAsync(_mapper.Map<ProductRus>(updateProduct));
                 await _repositoryRus.SaveChangesAsync(cancellationToken);
                 return true;
                 break;
             case 3:
-                var mappedUzb = await _repositoryEng.UpdateAsync(_mapper.Map<ProductEng>(updateProduct));
+                var productUzb = await _repositoryUzb.GetAsync(p => p.ModelName == updateProduct.ModelName);
+
+                if (productUzb is null)
+                {
+                    throw new CustomException(404, "Product not found!");
+                }
+
+                var mappedUzb = await _repositoryUzb.UpdateAsync(_mapper.Map<ProductUzb>(updateProduct));
                 await _repositoryUzb.SaveChangesAsync(cancellationToken);
                 return true;
                 break;
@@ -376,4 +408,7 @@ public class ProductService : IProductService
                 break;
         }
     }
+
+    
+    
 }
