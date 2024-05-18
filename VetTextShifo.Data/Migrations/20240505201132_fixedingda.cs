@@ -7,7 +7,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace VetTextShifo.Data.Migrations
 {
     /// <inheritdoc />
-    public partial class first : Migration
+    public partial class fixedingda : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -27,28 +27,13 @@ namespace VetTextShifo.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Catigories",
-                columns: table => new
-                {
-                    id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Name = table.Column<string>(type: "text", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Catigories", x => x.id);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Customers",
                 columns: table => new
                 {
                     id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    FullName = table.Column<string>(type: "text", nullable: false),
-                    PhoneNumber = table.Column<string>(type: "text", nullable: false),
-                    CreateAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    ProductId = table.Column<int>(type: "integer", nullable: false)
+                    CustomerIp = table.Column<string>(type: "text", nullable: false),
+                    CreateAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -81,8 +66,6 @@ namespace VetTextShifo.Data.Migrations
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     Title = table.Column<string>(type: "text", nullable: false),
                     Description = table.Column<string>(type: "text", nullable: false),
-                    FilePath = table.Column<string>(type: "text", nullable: false),
-                    FileName = table.Column<string>(type: "text", nullable: false),
                     CreateAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
                 },
                 constraints: table =>
@@ -98,8 +81,6 @@ namespace VetTextShifo.Data.Migrations
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     Title = table.Column<string>(type: "text", nullable: false),
                     Description = table.Column<string>(type: "text", nullable: false),
-                    FilePath = table.Column<string>(type: "text", nullable: false),
-                    FileName = table.Column<string>(type: "text", nullable: false),
                     CreateAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
                 },
                 constraints: table =>
@@ -115,8 +96,6 @@ namespace VetTextShifo.Data.Migrations
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     Title = table.Column<string>(type: "text", nullable: false),
                     Description = table.Column<string>(type: "text", nullable: false),
-                    FilePath = table.Column<string>(type: "text", nullable: false),
-                    FileName = table.Column<string>(type: "text", nullable: false),
                     CreateAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
                 },
                 constraints: table =>
@@ -139,7 +118,8 @@ namespace VetTextShifo.Data.Migrations
                     ExtraDevices = table.Column<string>(type: "text", nullable: false),
                     PaymentType = table.Column<string>(type: "text", nullable: false),
                     PaymentContract = table.Column<bool>(type: "boolean", nullable: false),
-                    Description = table.Column<string>(type: "text", nullable: false)
+                    Description = table.Column<string>(type: "text", nullable: false),
+                    LikeCount = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -193,42 +173,58 @@ namespace VetTextShifo.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Likes",
+                name: "Orders",
                 columns: table => new
                 {
                     id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    CustomerIP = table.Column<int>(type: "integer", nullable: false),
-                    ProductId = table.Column<int>(type: "integer", nullable: false),
+                    ProductModelName = table.Column<string>(type: "text", nullable: false),
+                    CustomerName = table.Column<string>(type: "text", nullable: false),
+                    CustomerNumber = table.Column<string>(type: "text", nullable: false),
+                    CreatedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     Customerid = table.Column<int>(type: "integer", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Likes", x => x.id);
+                    table.PrimaryKey("PK_Orders", x => x.id);
                     table.ForeignKey(
-                        name: "FK_Likes_Customers_Customerid",
+                        name: "FK_Orders_Customers_Customerid",
                         column: x => x.Customerid,
                         principalTable: "Customers",
                         principalColumn: "id");
                 });
 
             migrationBuilder.CreateTable(
-                name: "Orders",
+                name: "attachmentForNews",
                 columns: table => new
                 {
                     id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    CustomerId = table.Column<int>(type: "integer", nullable: false),
-                    ProductId = table.Column<int>(type: "integer", nullable: false),
-                    CreatedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                    Name = table.Column<string>(type: "text", nullable: false),
+                    Path = table.Column<string>(type: "text", nullable: false),
+                    NewsModelEngId = table.Column<int>(type: "integer", nullable: false),
+                    NewsModelRusId = table.Column<int>(type: "integer", nullable: false),
+                    NewsModelUzbId = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Orders", x => x.id);
+                    table.PrimaryKey("PK_attachmentForNews", x => x.id);
                     table.ForeignKey(
-                        name: "FK_Orders_Customers_CustomerId",
-                        column: x => x.CustomerId,
-                        principalTable: "Customers",
+                        name: "FK_attachmentForNews_NewsEng_NewsModelEngId",
+                        column: x => x.NewsModelEngId,
+                        principalTable: "NewsEng",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_attachmentForNews_NewsRus_NewsModelRusId",
+                        column: x => x.NewsModelRusId,
+                        principalTable: "NewsRus",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_attachmentForNews_NewsUzb_NewsModelUzbId",
+                        column: x => x.NewsModelUzbId,
+                        principalTable: "NewsUzb",
                         principalColumn: "id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -275,8 +271,8 @@ namespace VetTextShifo.Data.Migrations
                     id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     Name = table.Column<string>(type: "text", nullable: false),
-                    Comment = table.Column<string>(type: "text", nullable: false),
-                    ProductId = table.Column<int>(type: "integer", nullable: false),
+                    comment = table.Column<string>(type: "text", nullable: false),
+                    ProductModel = table.Column<string>(type: "text", nullable: false),
                     ProductEngid = table.Column<int>(type: "integer", nullable: true),
                     ProductRusid = table.Column<int>(type: "integer", nullable: true),
                     ProductUzbid = table.Column<int>(type: "integer", nullable: true)
@@ -305,6 +301,24 @@ namespace VetTextShifo.Data.Migrations
                 name: "IX_Admins_email",
                 table: "Admins",
                 column: "email",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_attachmentForNews_NewsModelEngId",
+                table: "attachmentForNews",
+                column: "NewsModelEngId",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_attachmentForNews_NewsModelRusId",
+                table: "attachmentForNews",
+                column: "NewsModelRusId",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_attachmentForNews_NewsModelUzbId",
+                table: "attachmentForNews",
+                column: "NewsModelUzbId",
                 unique: true);
 
             migrationBuilder.CreateIndex(
@@ -338,14 +352,15 @@ namespace VetTextShifo.Data.Migrations
                 column: "ProductUzbid");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Likes_Customerid",
-                table: "Likes",
-                column: "Customerid");
+                name: "IX_Customers_CustomerIp",
+                table: "Customers",
+                column: "CustomerIp",
+                unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_Orders_CustomerId",
+                name: "IX_Orders_Customerid",
                 table: "Orders",
-                column: "CustomerId");
+                column: "Customerid");
 
             migrationBuilder.CreateIndex(
                 name: "IX_ProductsEng_ModelName",
@@ -373,19 +388,19 @@ namespace VetTextShifo.Data.Migrations
                 name: "Admins");
 
             migrationBuilder.DropTable(
-                name: "AttachmentProducts");
+                name: "attachmentForNews");
 
             migrationBuilder.DropTable(
-                name: "Catigories");
+                name: "AttachmentProducts");
 
             migrationBuilder.DropTable(
                 name: "Comments");
 
             migrationBuilder.DropTable(
-                name: "Likes");
+                name: "Locations");
 
             migrationBuilder.DropTable(
-                name: "Locations");
+                name: "Orders");
 
             migrationBuilder.DropTable(
                 name: "NewsEng");
@@ -395,9 +410,6 @@ namespace VetTextShifo.Data.Migrations
 
             migrationBuilder.DropTable(
                 name: "NewsUzb");
-
-            migrationBuilder.DropTable(
-                name: "Orders");
 
             migrationBuilder.DropTable(
                 name: "ProductsEng");

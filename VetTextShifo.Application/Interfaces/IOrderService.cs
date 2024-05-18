@@ -10,7 +10,7 @@ public interface IOrderService
 {
     public Task<OrderForView> CreateOrder(OrderForRequest orderForCreate,
         CancellationToken cancellationToken);
-    public Task<OrderForView> UpdateOrder(int id, OrderForRequest orderForUpdate,
+    public Task<OrderForView> UpdateOrder(OrderForView orderForUpdate,
         CancellationToken cancellationToken);
     public Task<bool> DeleteOrder(int id,  CancellationToken cancellationToken);
     public Task<OrderForView> GetOrder(Expression<Func<Order,bool>> order);

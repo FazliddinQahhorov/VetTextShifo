@@ -1,13 +1,17 @@
 ﻿using AutoMapper;
+using VetTextShifo.Application.DTOs.Details.Attachments;
 using VetTextShifo.Application.DTOs.Details.Location;
 using VetTextShifo.Application.DTOs.Products.Comments;
 using VetTextShifo.Application.DTOs.Products.ForRequest;
 using VetTextShifo.Application.DTOs.Products.ForView;
 using VetTextShifo.Application.DTOs.Users.Customer.ForRequest;
 using VetTextShifo.Application.DTOs.Users.Customer.ForView;
+using VetTextShifo.Application.DTOs.Users.News.ForRequests;
+using VetTextShifo.Application.DTOs.Users.News.ForResponse;
 using VetTextShifo.Application.DTOs.Users.Orders.ForRequest;
 using VetTextShifo.Application.DTOs.Users.Orders.ForView;
 using VetTextShifo.Domain.Entities;
+using VetTextShifo.Domain.Entities.Attachments;
 using VetTextShifo.Domain.Entities.ProductDetails;
 using VetTextShifo.Domain.Entities.ProductDetails.NewsModel;
 using VetTextShifo.Domain.Entities.ProductDetails.Products;
@@ -20,19 +24,16 @@ public class MappingProfile : Profile
     public MappingProfile()
     {
         //News Eng
-        CreateMap<NewsModelEng, NewForCreate>().ReverseMap();
-        CreateMap<NewsModelEng, NewForUpdate>().ReverseMap();
-        CreateMap<NewsModelEng, NewForView>().ReverseMap();
+        CreateMap<NewsModelEng, NewsForRequest>().ReverseMap();
+        CreateMap<NewsModelEng, NewsForResponce>().ReverseMap();
 
         //News Rus
-        CreateMap<NewsModelRus, NewForCreate>().ReverseMap();
-        CreateMap<NewsModelRus, NewForUpdate>().ReverseMap();
-        CreateMap<NewsModelRus, NewForView>().ReverseMap();
+        CreateMap<NewsModelRus, NewsForRequest>().ReverseMap();
+        CreateMap<NewsModelRus, NewsForResponce>().ReverseMap();
 
         //News Uzb
-        CreateMap<NewsModelUzb, NewForCreate>().ReverseMap();
-        CreateMap<NewsModelUzb, NewForUpdate>().ReverseMap();
-        CreateMap<NewsModelUzb, NewForView>().ReverseMap();
+        CreateMap<NewsModelUzb, NewsForRequest>().ReverseMap();
+        CreateMap<NewsModelUzb, NewsForResponce>().ReverseMap();
 
         //Product Eng
         CreateMap<ProductEng, ProductForCreate>().ReverseMap();
@@ -51,10 +52,6 @@ public class MappingProfile : Profile
         CreateMap<ProductUzb, ProductForUpdate>().ReverseMap();
         CreateMap<ProductUzb, ProductByIdView>().ReverseMap();
         CreateMap<ProductUzb, ProductForMainView>().ReverseMap();
-
-        //Customer Respons
-        CreateMap<Customer, CustomerLikedProductView>().ReverseMap();
-        CreateMap<Customer, OrderForCollectionView>().ReverseMap();
 
         //Location 
         CreateMap<Location, LocationForCreation>().ReverseMap();
@@ -75,9 +72,11 @@ public class MappingProfile : Profile
         CreateMap<Order, OrderForView>().ReverseMap();
 
         //Customer
-        CreateMap<Customer, CustomerForCreateRequest>().ReverseMap();
         CreateMap<Customer, CustomerForUpdateRequest>().ReverseMap();
         CreateMap<Customer, CustomerForView>().ReverseMap();
+
+        //Attachments
+        CreateMap<AttachmentForNew, AttachmentForResponse>().ReverseMap();
 
 
 

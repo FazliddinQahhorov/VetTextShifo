@@ -27,20 +27,6 @@ public class CustomerService : ICustomerService
         _repository = repository;
     }
 
-    public async Task<CustomerForView> CreateAsync(CustomerForCreateRequest request,
-        CancellationToken cancellationToken)
-    {
-        var user = await _repository.GetAsync(p => p.CustomerIp == request.CustomerIp);
-        if(user is not null)
-        {
-            throw new CustomException(400, "User already exist!");
-        }
-
-        var result = await _repository.CreateAsync(_mapper.Map<Customer>(request));
-        await _repository.SaveChangesAsync(cancellationToken);
-
-        return _mapper.Map<CustomerForView>(result);
-    }
 
     public async Task<bool> DeleteAsync(int id, CancellationToken cancellationToken)
     {
@@ -69,10 +55,10 @@ public class CustomerService : ICustomerService
         return _mapper.Map<CustomerForView>(user);
     }
 
-    public async Task<CustomerForView> UpdateAsync(int id, CustomerForUpdateRequest request,
+    public async Task<CustomerForView> UpdateAsync(CustomerForUpdateRequest request,
         CancellationToken cancellation)
     {
-        var user = await _repository.GetAsync(p => p.id == id);
+        var user = await _repository.GetAsync(p => p.id == request.id);
         if (user is  null)
         {
             throw new CustomException(404, "User not found!");

@@ -57,7 +57,7 @@ builder.Services.AddCors(options =>
     options.AddPolicy(MyAllowSpesificOrigins,
         policy =>
         {
-            policy.AllowAnyOrigin()
+            policy.WithOrigins("http://localhost:3000")
             .AllowAnyHeader()
             .AllowAnyMethod();
         }
@@ -73,7 +73,7 @@ if (app.Environment.IsDevelopment() || app.Environment.IsProduction())
     app.UseSwaggerUI();
 }
 
-app.UseCors();
+app.UseCors(MyAllowSpesificOrigins);
 app.UseAuthentication();
 app.UseAuthorization();
 app.UseRateLimiter();

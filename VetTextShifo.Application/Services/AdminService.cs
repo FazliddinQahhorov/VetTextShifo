@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Interviewer.Application.Extensions;
 using System.Linq.Expressions;
 using VetTextShifo.Application.Confugrations;
 using VetTextShifo.Application.DTOs.Users.Customer.ForRequest;
@@ -25,15 +26,18 @@ public class AdminService : IAdminService
 
     public async Task<bool> ChangePasswordAsync(AdminChangePassword userPasswordChange, CancellationToken cancellationToken)
     {
-        var user = await _repository.GetAsync(p => p.email == userPasswordChange.Email);
-        if (user is null)
+        var admin = await _repository.GetAsync(p => p.email == userPasswordChange.Email);
+        if (admin == null)
         {
-            throw new CustomException(404, "User not found");
+            throw new CustomException(400, "User not found");
         }
-
-        user.password = userPasswordChange.NewPassword;
-        await _repository.UpdateAsync(user);
-        await _repository.SaveChangesAsync(cancellationToken);
+        if(admin.password != userPasswordChange.OldPassword.Encrypt())
+        {
+            throw new CustomException(400, "Password incorrect");
+        }
+        admin.password = userPasswordChange.NewPassword.Encrypt();
+        _repository.UpdateAsync(admin);
+        _repository.SaveChangesAsync(cancellationToken);
         return true;
         
     }
@@ -45,7 +49,11 @@ public class AdminService : IAdminService
         {
             throw new CustomException(400, "User already exsist");
         }
-
+        if(userCreation.Password != userCreation.ConfirmPassword)
+        {
+            throw new CustomException(404, "Bad request on the password!");
+        }
+        userCreation.Password = userCreation.Password.Encrypt();
         var respons = await _repository.CreateAsync(_mapper.Map<Admin>(userCreation));
         await _repository.SaveChangesAsync(cancellationToken);
 

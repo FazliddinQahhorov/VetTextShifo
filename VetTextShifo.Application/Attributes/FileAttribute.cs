@@ -1,9 +1,9 @@
 ﻿using Microsoft.AspNetCore.Http;
 using System.ComponentModel.DataAnnotations;
 
-namespace VetTextShifo.Application.Extansions;
+namespace VetTextShifo.Application.Attributes;
 
-public class FileExtension : ValidationAttribute
+public class FileAttribute : ValidationAttribute
 {
     protected override ValidationResult? IsValid(object? value, ValidationContext validationContext)
     {

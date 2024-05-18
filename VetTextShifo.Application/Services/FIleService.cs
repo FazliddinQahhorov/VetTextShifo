@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Security.Cryptography.X509Certificates;
-using AutoMapper;
-using Microsoft.AspNetCore.Http;
-using Microsoft.IdentityModel.Tokens;
-using VetTextShifo.Application.DTOs.Details.Attachments;
+﻿using VetTextShifo.Application.DTOs.Details.Attachments;
 using VetTextShifo.Application.Exceptions;
 using VetTextShifo.Application.Interfaces;
 using VetTextShifo.Data.Interfaces;
@@ -20,18 +13,15 @@ namespace VetTextShifo.Application.Services
         private readonly IGenericRepository<ProductEng> _repositoryEng;
         private readonly IGenericRepository<ProductRus> _repositoryRus;
         private readonly IGenericRepository<ProductUzb> _repositoryUzb;
-        private readonly IGenericRepository<AttachmentModel> _attachmentModelrepository;
 
         public FileService(IGenericRepository<AttachmentModel> repository,
             IGenericRepository<ProductEng> repositoryEng,
             IGenericRepository<ProductRus> repositoryRus,
-            IGenericRepository<ProductUzb> repositoryUzb,
-            IGenericRepository<AttachmentModel> attachmentModelrepository)
+            IGenericRepository<ProductUzb> repositoryUzb)
         {
             _repositoryEng = repositoryEng;
             _repositoryRus = repositoryRus;
             _repositoryUzb = repositoryUzb;
-            _attachmentModelrepository = attachmentModelrepository;
             _repository = repository;
         }
 
@@ -100,7 +90,7 @@ namespace VetTextShifo.Application.Services
 
         public async Task<AttachmentForResponse> GetForMainPageImage(int id, int languageId)
         {
-            
+
             switch (languageId)
             {
                 case 1:
@@ -141,13 +131,13 @@ namespace VetTextShifo.Application.Services
                 case 1:
                     var DataEng = _repository.GetAll().Where(p => p.ProductEngId == id);
                     var responseEng = new List<AttachmentForResponse>();
-                    foreach(var item in DataEng)
+                    foreach (var item in DataEng)
                     {
                         responseEng.Add(new AttachmentForResponse
                         {
                             FileName = item.Name,
                             FilePath = Path.Combine("Resources", item.Name)
-                        }); 
+                        });
                     }
                     return responseEng;
                     break;

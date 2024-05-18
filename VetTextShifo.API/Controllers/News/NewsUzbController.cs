@@ -2,35 +2,55 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
 using VetTextShifo.Application.Confugrations;
-using VetTextShifo.Application.DTOs.Users.Customer.ForRequest;
-using VetTextShifo.Application.DTOs.Users.Customer.ForView;
+using VetTextShifo.Application.DTOs.Products.ForView;
+using VetTextShifo.Application.DTOs.Users.News.ForRequests;
+using VetTextShifo.Application.DTOs.Users.News.ForResponse;
 using VetTextShifo.Application.Exceptions;
 using VetTextShifo.Application.Interfaces;
 
-namespace VetTextShifo.API.Controllers.Auth
+namespace VetTextShifo.API.Controllers.News
 {
     [Route("api/[controller]/[action]")]
     [ApiController]
-    //[Authorize]
     [EnableRateLimiting("fixed")]
-    public class AdminController : ControllerBase
+    public class NewsUzbController : ControllerBase
     {
-        private readonly IAdminService _service;
+        private readonly INewsService _newsService;
 
-        public AdminController(IAdminService service)
+        public NewsUzbController(INewsService newsService)
         {
-            _service = service;
+            _newsService = newsService;
         }
 
-        
         [HttpPost]
-        public async Task<ActionResult<AdminRespons>> CreateAdmin([FromForm] AdminRequest request,
-            CancellationToken cancellationToken)
+        public async Task<ActionResult<NewsForResponce>> CreatNewUzb(NewsForRequest model,
+            CancellationToken cancellation)
         {
             try
             {
-            return Ok(await _service.CreatAsync(request, cancellationToken));
+                return Ok(await _newsService.CreatAsync(3, model, cancellation));
+            }
+            catch (CustomException ex)
+            {
+                // Agar CustomException yuzaga kelsa
+                return StatusCode(ex.Code, ex.Message);
+            }
+            catch (Exception ex)
+            {
+                // Agar metodda boshqa xatolik yuzaga kelsa
+                return StatusCode(500, "Serverda xatolik yuzaga keldi: " + ex.Message);
+            }
+        }
 
+
+        [Authorize]
+        [HttpPut]
+        public async Task<ActionResult<bool>> UpdateNewUzb(NewsForRequest model,
+            CancellationToken cancellation)
+        {
+            try
+            {
+                return Ok(await _newsService.UpdateAsync(3, model, cancellation));
             }
             catch (CustomException ex)
             {
@@ -46,11 +66,11 @@ namespace VetTextShifo.API.Controllers.Auth
 
 
         [HttpGet]
-        public async Task<ActionResult<AdminRespons>> GetById(int id)
+        public async Task<ActionResult<NewsForResponce>> GetNewUzb(int id)
         {
             try
             {
-                return Ok(await _service.GetAsync(p => p.id == id));
+                return Ok(await _newsService.GetAsync(3, null, null, p => p.id == id));
             }
             catch (CustomException ex)
             {
@@ -66,17 +86,16 @@ namespace VetTextShifo.API.Controllers.Auth
 
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<AdminRespons>>> GetAll(int pageSize, int pageIndex)
+        public async Task<ActionResult<List<NewsForResponce>>> GetAllNewsUzb(int pageSize, int pageIndex)
         {
-            var @params = new PaginationParams
+            var products = new PaginationParams
             {
                 PageSize = pageSize,
                 PageIndex = pageIndex
             };
             try
             {
-                var admins = await _service.GetAllAsync(@params);
-                return Ok(admins);
+                return Ok(await _newsService.GetAllAsync(3, products));
             }
             catch (CustomException ex)
             {
@@ -90,42 +109,26 @@ namespace VetTextShifo.API.Controllers.Auth
             }
         }
 
-        [HttpPut]
-        public async Task<ActionResult<bool>> UpdateAdminData(AdminChangePassword request,
-            CancellationToken cancellationToken)
-        {
-            try
-            {
-                return Ok(await _service.ChangePasswordAsync(request, cancellationToken));
-            }
-            catch (CustomException ex)
-            {
-                // Agar CustomException yuzaga kelsa
-                return StatusCode(ex.Code, ex.Message);
-            }
-            catch (Exception ex)
-            {
-                // Agar metodda boshqa xatolik yuzaga kelsa
-                return StatusCode(500, "Serverda xatolik yuzaga keldi: " + ex.Message);
-            }
-        }
-        [HttpDelete]
-        public async Task<ActionResult<bool>> DeleteAdmin(int id, CancellationToken cancellation)
-        {
-            try
-            {
-                return Ok(await _service.DeleteAsync(id, cancellation));
-            }
-            catch (CustomException ex)
-            {
-                // Agar CustomException yuzaga kelsa
-                return StatusCode(ex.Code, ex.Message);
-            }
-            catch (Exception ex)
-            {
-                // Agar metodda boshqa xatolik yuzaga kelsa
-                return StatusCode(500, "Serverda xatolik yuzaga keldi: " + ex.Message);
-            }
-        }
+        //[Authorize]
+        //[HttpDelete]
+        //public async Task<ActionResult<bool>> DeleteNewAll(int id,
+        //    CancellationToken cancellation)
+        //{
+        //    try
+        //    {
+        //        return Ok(await _newsService.DeleteAsync(id, cancellation));
+        //    }
+        //    catch (CustomException ex)
+        //    {
+        //        // Agar CustomException yuzaga kelsa
+        //        return StatusCode(ex.Code, ex.Message);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        // Agar metodda boshqa xatolik yuzaga kelsa
+        //        return StatusCode(500, "Serverda xatolik yuzaga keldi: " + ex.Message);
+        //    }
+        //}
+
     }
 }

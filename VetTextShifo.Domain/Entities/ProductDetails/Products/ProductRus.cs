@@ -18,6 +18,7 @@ public class ProductRus : Auditable
     public bool PaymentContract { get; set; }
     public string Description { get; set; }
     public int LikeCount { get; set; }
+    public int Rating { get; set; }
     public List<AttachmentModel> attachments { get; set; }
     public List<Comment> comments { get; set; }
 

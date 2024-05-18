@@ -18,8 +18,12 @@ public static class DependencyInjection
         services.AddScoped<IProductService, ProductService>();
         services.AddScoped<IFileService, FileService>();
         services.AddScoped<ICommentService, CommentService>();
-        services.AddScoped<ILikeService, LikeService>();
+        services.AddScoped<IFileForNewsService, FileForNewsService>();
+        services.AddScoped<INewsService, NewsService>();
+        services.AddScoped<IOrderService, OrderService>();
+        services.AddScoped<ICustomerService, CustomerService>();
         services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+        
     }
 
     public static void ConfigureSwagger(this IServiceCollection services)

@@ -1,13 +1,17 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using VetTextShifo.Application.Confugrations;
 using VetTextShifo.Application.DTOs.Users.Customer.ForRequest;
 using VetTextShifo.Application.DTOs.Users.Customer.ForView;
+using VetTextShifo.Application.Exceptions;
 using VetTextShifo.Application.Interfaces;
 
 namespace VetTextShifo.API.Controllers.User
 {
-    [Route("api/[controller]/[action]")]
-    [ApiController]
+    //[Route("api/[controller]/[action]")]
+    //[ApiController]
+    //[EnableRateLimiting("fixed")]
     public class CustomerController : ControllerBase
     {
         private readonly ICustomerService _customerService;
@@ -19,21 +23,27 @@ namespace VetTextShifo.API.Controllers.User
             _httpContextAccessor = httpContextAccessor;
         }
 
-        [HttpPost]
-        public async Task<ActionResult<CustomerForView>> Create([FromForm] CustomerForCreateRequest request,
-                   CancellationToken cancellationToken)
+        //[HttpGet]
+        public async Task<ActionResult<CustomerForView>> GetById(int id)
         {
-            request.CustomerIp = _httpContextAccessor.HttpContext.Connection.RemoteIpAddress?.ToString();
-            return Ok(await _customerService.CreateAsync(request, cancellationToken));
+            try
+            {
+                return Ok(await _customerService.GetAsync(p => p.id == id));
+            }
+            catch (CustomException ex)
+            {
+                // Agar CustomException yuzaga kelsa
+                return StatusCode(ex.Code, ex.Message);
+            }
+            catch (Exception ex)
+            {
+                // Agar metodda boshqa xatolik yuzaga kelsa
+                return StatusCode(500, "Serverda xatolik yuzaga keldi: " + ex.Message);
+            }
         }
 
 
-        [HttpGet]
-        public async Task<ActionResult<CustomerForView>> GetById(int id) =>
-            Ok(await _customerService.GetAsync(p => p.id == id));
-
-
-        [HttpGet]
+        //[HttpGet]
         public async Task<ActionResult<IEnumerable<CustomerForView>>> GetAll(int pageSize, int pageIndex)
         {
             var @params = new PaginationParams
@@ -41,17 +51,62 @@ namespace VetTextShifo.API.Controllers.User
                 PageSize = pageSize,
                 PageIndex = pageIndex
             };
-            var admins = await _customerService.GetAllAsync(@params);
-            return Ok(admins);
+            try
+            {
+                var admins = await _customerService.GetAllAsync(@params);
+                return Ok(admins);
+            }
+            catch (CustomException ex)
+            {
+                // Agar CustomException yuzaga kelsa
+                return StatusCode(ex.Code, ex.Message);
+            }
+            catch (Exception ex)
+            {
+                // Agar metodda boshqa xatolik yuzaga kelsa
+                return StatusCode(500, "Serverda xatolik yuzaga keldi: " + ex.Message);
+            }
         }
 
-        [HttpPut]
-        public async Task<ActionResult<bool>> Update(int id, CustomerForUpdateRequest request,
-            CancellationToken cancellationToken) =>
-            Ok(await _customerService.UpdateAsync(id, request, cancellationToken));
+        //[Authorize]
+        //[HttpPut]
+        public async Task<ActionResult<bool>> Update(CustomerForUpdateRequest request,
+            CancellationToken cancellationToken)
+        {
+            try
+            {
+                return Ok(await _customerService.UpdateAsync(request, cancellationToken));
+            }
+            catch (CustomException ex)
+            {
+                // Agar CustomException yuzaga kelsa
+                return StatusCode(ex.Code, ex.Message);
+            }
+            catch (Exception ex)
+            {
+                // Agar metodda boshqa xatolik yuzaga kelsa
+                return StatusCode(500, "Serverda xatolik yuzaga keldi: " + ex.Message);
+            }
+        }
 
-        [HttpDelete]
-        public async Task<ActionResult<bool>> Delete(int id, CancellationToken cancellation) =>
-            Ok(await _customerService.DeleteAsync(id, cancellation));
+        //[Authorize]
+        //[HttpDelete]
+        public async Task<ActionResult<bool>> Delete(int id, CancellationToken cancellation)
+        {
+            try
+            { 
+                return Ok(await _customerService.DeleteAsync(id, cancellation));
+            }
+            catch (CustomException ex)
+            {
+                // Agar CustomException yuzaga kelsa
+                return StatusCode(ex.Code, ex.Message);
+            }
+            catch (Exception ex)
+            {
+                // Agar metodda boshqa xatolik yuzaga kelsa
+                return StatusCode(500, "Serverda xatolik yuzaga keldi: " + ex.Message);
+            }
+        }
     }
 }

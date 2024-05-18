@@ -16,7 +16,7 @@ public class AppDbContext : DbContext
     }
 
     DbSet<AttachmentModel> AttachmentProducts { get; set; }
-    DbSet<Category> Catigories { get; set; }
+    DbSet<AttachmentForNew> attachmentForNews { get; set; }
     DbSet<Location> Locations { get; set; }
     DbSet<NewsModelEng> NewsEng { get; set; }
     DbSet<NewsModelRus> NewsRus { get; set; }
@@ -27,7 +27,6 @@ public class AppDbContext : DbContext
     DbSet<Admin> Admins { get; set; }
     DbSet<Customer> Customers { get; set; }
     DbSet<Order> Orders { get; set; }
-    DbSet<Likes> Likes { get; set; }
     DbSet<Comment> Comments { get; set; }
 
 
@@ -45,6 +44,38 @@ public class AppDbContext : DbContext
         modelBuilder.Entity<ProductUzb>()
             .HasIndex(u => u.ModelName)
             .IsUnique();
+        modelBuilder.Entity<Customer>()
+            .HasIndex(u => u.CustomerIp)
+            .IsUnique();
 
+        modelBuilder.Entity<NewsModelEng>()
+           .HasOne(n => n.Attachment)
+           .WithOne(a => a.NewsModelEng)
+           .HasForeignKey<AttachmentForNew>(a => a.NewsModelEngId);
+
+        modelBuilder.Entity<NewsModelRus>()
+            .HasOne(n => n.Attachment)
+            .WithOne(a => a.NewsModelRus)
+            .HasForeignKey<AttachmentForNew>(a => a.NewsModelRusId);
+
+        modelBuilder.Entity<NewsModelUzb>()
+            .HasOne(n => n.Attachment)
+            .WithOne(a => a.NewsModelUzb)
+            .HasForeignKey<AttachmentForNew>(a => a.NewsModelUzbId);
+
+        modelBuilder.Entity<ProductEng>()
+            .HasMany(p => p.attachments) // One ProductEng has many Attachments
+            .WithOne(a => a.ProductEng) // Each Attachment belongs to one ProductEng
+            .HasForeignKey(a => a.ProductEngId); // Foreign key property in AttachmentModel
+
+        modelBuilder.Entity<ProductRus>()
+            .HasMany(p => p.attachments) // One ProductRus has many Attachments
+            .WithOne(a => a.ProductRus) // Each Attachment belongs to one ProductRus
+            .HasForeignKey(a => a.ProductRusId); // Foreign key property in AttachmentModel
+
+        modelBuilder.Entity<ProductUzb>()
+            .HasMany(p => p.attachments) // One ProductUzb has many Attachments
+            .WithOne(a => a.ProductUzb) // Each Attachment belongs to one ProductUzb
+            .HasForeignKey(a => a.ProductUzbId);
     }
 }

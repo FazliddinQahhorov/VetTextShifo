@@ -2,40 +2,57 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
 using VetTextShifo.Application.Confugrations;
-using VetTextShifo.Application.DTOs.Users.Customer.ForRequest;
-using VetTextShifo.Application.DTOs.Users.Customer.ForView;
-using VetTextShifo.Application.DTOs.Users.Orders.ForRequest;
-using VetTextShifo.Application.DTOs.Users.Orders.ForView;
+using VetTextShifo.Application.DTOs.Products.ForRequest;
+using VetTextShifo.Application.DTOs.Products.ForView;
+using VetTextShifo.Application.DTOs.Users.News.ForRequests;
+using VetTextShifo.Application.DTOs.Users.News.ForResponse;
 using VetTextShifo.Application.Exceptions;
 using VetTextShifo.Application.Interfaces;
-using VetTextShifo.Domain.Entities.Users;
+using VetTextShifo.Domain.Entities.ProductDetails;
 
-namespace VetTextShifo.API.Controllers.User
+namespace VetTextShifo.API.Controllers.News
 {
     [Route("api/[controller]/[action]")]
     [ApiController]
     [EnableRateLimiting("fixed")]
-
-    public class OrderController : ControllerBase
+    public class NewsEngController : ControllerBase
     {
-        private readonly IOrderService _orderService;
-        private readonly IHttpContextAccessor httpContextAccessor;
+        private readonly INewsService _newsService;
 
-        public OrderController(IOrderService orderService, IHttpContextAccessor httpContextAccessor)
+        public NewsEngController(INewsService newsService)
         {
-            _orderService = orderService;
-            this.httpContextAccessor = httpContextAccessor;
+            _newsService = newsService;
         }
 
         [HttpPost]
-        public async Task<ActionResult<Order>> CreateOrder( OrderForRequest request,
-            CancellationToken cancellationToken)
+        public async Task<ActionResult<NewsForResponce>> CreatNewEng(NewsForRequest model,
+            CancellationToken cancellation)
         {
             try
             {
-                var ip = httpContextAccessor.HttpContext.Connection.RemoteIpAddress.ToString();
-                var result = await _orderService.CreateOrder(request, cancellationToken);
-                return Ok(result);
+                return Ok(await _newsService.CreatAsync(1, model, cancellation));
+            }
+            catch (CustomException ex)
+            {
+                // Agar CustomException yuzaga kelsa
+                return StatusCode(ex.Code, ex.Message);
+            }
+            catch (Exception ex)
+            {
+                // Agar metodda boshqa xatolik yuzaga kelsa
+                return StatusCode(500, "Serverda xatolik yuzaga keldi: " + ex.Message);
+            }
+        }
+
+
+        [Authorize]
+        [HttpPut]
+        public async Task<ActionResult<bool>> UpdateNewEng(NewsForRequest model,
+            CancellationToken cancellation)
+        {
+            try
+            {
+                return Ok(await _newsService.UpdateAsync(1, model, cancellation));
             }
             catch (CustomException ex)
             {
@@ -51,11 +68,11 @@ namespace VetTextShifo.API.Controllers.User
 
 
         [HttpGet]
-        public async Task<ActionResult<Order>> GetById(int id)
+        public async Task<ActionResult<NewsForResponce>> GetNewEng(int id)
         {
             try
             {
-                return Ok(await _orderService.GetOrder(p => p.id == id));
+                return Ok(await _newsService.GetAsync(1, p => p.id == id));
             }
             catch (CustomException ex)
             {
@@ -71,38 +88,16 @@ namespace VetTextShifo.API.Controllers.User
 
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Order>>> GetAll(int pageSize, int pageIndex)
+        public async Task<ActionResult<List<NewsForResponce>>> GetAllNewsEng(int pageSize, int pageIndex)
         {
-            var @params = new PaginationParams
+            var products = new PaginationParams
             {
                 PageSize = pageSize,
                 PageIndex = pageIndex
             };
             try
             {
-                var admins = await _orderService.GetAllOrders(@params);
-                return Ok(admins);
-            }
-            catch (CustomException ex)
-            {
-                // Agar CustomException yuzaga kelsa
-                return StatusCode(ex.Code, ex.Message);
-            }
-            catch (Exception ex)
-            {
-                // Agar metodda boshqa xatolik yuzaga kelsa
-                return StatusCode(500, "Serverda xatolik yuzaga keldi: " + ex.Message);
-            }
-        }
-
-        [Authorize]
-        [HttpPut]
-        public async Task<ActionResult<bool>> UpdateAdminData(OrderForView request,
-            CancellationToken cancellationToken)
-        {
-            try
-            {
-                return Ok(await _orderService.UpdateOrder(request, cancellationToken));
+                return Ok(await _newsService.GetAllAsync(1, products));
             }
             catch (CustomException ex)
             {
@@ -118,11 +113,12 @@ namespace VetTextShifo.API.Controllers.User
 
         [Authorize]
         [HttpDelete]
-        public async Task<ActionResult<bool>> DeleteAdmin(int id, CancellationToken cancellation)
+        public async Task<ActionResult<bool>> DeleteNewAll(int id,
+            CancellationToken cancellation)
         {
             try
             {
-                return Ok(await _orderService.DeleteOrder(id, cancellation));
+                return Ok(await _newsService.DeleteAsync(id, cancellation));
             }
             catch (CustomException ex)
             {
@@ -135,6 +131,7 @@ namespace VetTextShifo.API.Controllers.User
                 return StatusCode(500, "Serverda xatolik yuzaga keldi: " + ex.Message);
             }
         }
-    }
-}
 
+    
+}
+}

@@ -12,8 +12,8 @@ using VetTextShifo.Data.DbContexts;
 namespace VetTextShifo.Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20240416161605_first")]
-    partial class first
+    [Migration("20240517103439_engOhirgisi")]
+    partial class engOhirgisi
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -47,6 +47,45 @@ namespace VetTextShifo.Data.Migrations
                         .IsUnique();
 
                     b.ToTable("Admins");
+                });
+
+            modelBuilder.Entity("VetTextShifo.Domain.Entities.Attachments.AttachmentForNew", b =>
+                {
+                    b.Property<int>("id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("id"));
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int>("NewsModelEngId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("NewsModelRusId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("NewsModelUzbId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Path")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("id");
+
+                    b.HasIndex("NewsModelEngId")
+                        .IsUnique();
+
+                    b.HasIndex("NewsModelRusId")
+                        .IsUnique();
+
+                    b.HasIndex("NewsModelUzbId")
+                        .IsUnique();
+
+                    b.ToTable("attachmentForNews");
                 });
 
             modelBuilder.Entity("VetTextShifo.Domain.Entities.Attachments.AttachmentModel", b =>
@@ -85,34 +124,13 @@ namespace VetTextShifo.Data.Migrations
                     b.ToTable("AttachmentProducts");
                 });
 
-            modelBuilder.Entity("VetTextShifo.Domain.Entities.ProductDetails.Catigory", b =>
+            modelBuilder.Entity("VetTextShifo.Domain.Entities.ProductDetails.Comment", b =>
                 {
                     b.Property<int>("id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer");
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("id"));
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.HasKey("id");
-
-                    b.ToTable("Catigories");
-                });
-
-            modelBuilder.Entity("VetTextShifo.Domain.Entities.ProductDetails.Comments", b =>
-                {
-                    b.Property<int>("id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("id"));
-
-                    b.Property<string>("Comment")
-                        .IsRequired()
-                        .HasColumnType("text");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -121,14 +139,19 @@ namespace VetTextShifo.Data.Migrations
                     b.Property<int?>("ProductEngid")
                         .HasColumnType("integer");
 
-                    b.Property<int>("ProductId")
-                        .HasColumnType("integer");
+                    b.Property<string>("ProductModel")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.Property<int?>("ProductRusid")
                         .HasColumnType("integer");
 
                     b.Property<int?>("ProductUzbid")
                         .HasColumnType("integer");
+
+                    b.Property<string>("comment")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.HasKey("id");
 
@@ -139,30 +162,6 @@ namespace VetTextShifo.Data.Migrations
                     b.HasIndex("ProductUzbid");
 
                     b.ToTable("Comments");
-                });
-
-            modelBuilder.Entity("VetTextShifo.Domain.Entities.ProductDetails.Likes", b =>
-                {
-                    b.Property<int>("id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("id"));
-
-                    b.Property<int>("CustomerIP")
-                        .HasColumnType("integer");
-
-                    b.Property<int?>("Customerid")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("ProductId")
-                        .HasColumnType("integer");
-
-                    b.HasKey("id");
-
-                    b.HasIndex("Customerid");
-
-                    b.ToTable("Likes");
                 });
 
             modelBuilder.Entity("VetTextShifo.Domain.Entities.ProductDetails.Location", b =>
@@ -216,14 +215,6 @@ namespace VetTextShifo.Data.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<string>("FileName")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("FilePath")
-                        .IsRequired()
-                        .HasColumnType("text");
-
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasColumnType("text");
@@ -248,14 +239,6 @@ namespace VetTextShifo.Data.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<string>("FileName")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("FilePath")
-                        .IsRequired()
-                        .HasColumnType("text");
-
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasColumnType("text");
@@ -277,14 +260,6 @@ namespace VetTextShifo.Data.Migrations
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("FileName")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("FilePath")
                         .IsRequired()
                         .HasColumnType("text");
 
@@ -321,6 +296,9 @@ namespace VetTextShifo.Data.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<int>("LikeCount")
+                        .HasColumnType("integer");
+
                     b.Property<string>("MadeIn")
                         .IsRequired()
                         .HasColumnType("text");
@@ -339,6 +317,9 @@ namespace VetTextShifo.Data.Migrations
                     b.Property<string>("Produced")
                         .IsRequired()
                         .HasColumnType("text");
+
+                    b.Property<int>("Rating")
+                        .HasColumnType("integer");
 
                     b.Property<bool>("Service")
                         .HasColumnType("boolean");
@@ -397,6 +378,9 @@ namespace VetTextShifo.Data.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<int>("Rating")
+                        .HasColumnType("integer");
+
                     b.Property<bool>("Service")
                         .HasColumnType("boolean");
 
@@ -454,6 +438,9 @@ namespace VetTextShifo.Data.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<int>("Rating")
+                        .HasColumnType("integer");
+
                     b.Property<bool>("Service")
                         .HasColumnType("boolean");
 
@@ -476,18 +463,14 @@ namespace VetTextShifo.Data.Migrations
                     b.Property<DateTime>("CreateAt")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<string>("FullName")
+                    b.Property<string>("CustomerIp")
                         .IsRequired()
                         .HasColumnType("text");
-
-                    b.Property<string>("PhoneNumber")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<int>("ProductId")
-                        .HasColumnType("integer");
 
                     b.HasKey("id");
+
+                    b.HasIndex("CustomerIp")
+                        .IsUnique();
 
                     b.ToTable("Customers");
                 });
@@ -503,41 +486,83 @@ namespace VetTextShifo.Data.Migrations
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<int>("CustomerId")
+                    b.Property<string>("CustomerName")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("CustomerNumber")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int?>("Customerid")
                         .HasColumnType("integer");
 
-                    b.Property<int>("ProductId")
-                        .HasColumnType("integer");
+                    b.Property<string>("ProductModelName")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.HasKey("id");
 
-                    b.HasIndex("CustomerId");
+                    b.HasIndex("Customerid");
 
                     b.ToTable("Orders");
                 });
 
+            modelBuilder.Entity("VetTextShifo.Domain.Entities.Attachments.AttachmentForNew", b =>
+                {
+                    b.HasOne("VetTextShifo.Domain.Entities.ProductDetails.NewsModelEng", "NewsModelEng")
+                        .WithOne("Attachment")
+                        .HasForeignKey("VetTextShifo.Domain.Entities.Attachments.AttachmentForNew", "NewsModelEngId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("VetTextShifo.Domain.Entities.ProductDetails.NewsModel.NewsModelRus", "NewsModelRus")
+                        .WithOne("Attachment")
+                        .HasForeignKey("VetTextShifo.Domain.Entities.Attachments.AttachmentForNew", "NewsModelRusId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("VetTextShifo.Domain.Entities.ProductDetails.NewsModelUzb", "NewsModelUzb")
+                        .WithOne("Attachment")
+                        .HasForeignKey("VetTextShifo.Domain.Entities.Attachments.AttachmentForNew", "NewsModelUzbId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("NewsModelEng");
+
+                    b.Navigation("NewsModelRus");
+
+                    b.Navigation("NewsModelUzb");
+                });
+
             modelBuilder.Entity("VetTextShifo.Domain.Entities.Attachments.AttachmentModel", b =>
                 {
-                    b.HasOne("VetTextShifo.Domain.Entities.ProductDetails.Products.ProductEng", null)
+                    b.HasOne("VetTextShifo.Domain.Entities.ProductDetails.Products.ProductEng", "ProductEng")
                         .WithMany("attachments")
                         .HasForeignKey("ProductEngId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("VetTextShifo.Domain.Entities.ProductDetails.Products.ProductRus", null)
+                    b.HasOne("VetTextShifo.Domain.Entities.ProductDetails.Products.ProductRus", "ProductRus")
                         .WithMany("attachments")
                         .HasForeignKey("ProductRusId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("VetTextShifo.Domain.Entities.ProductDetails.Products.ProductUzb", null)
+                    b.HasOne("VetTextShifo.Domain.Entities.ProductDetails.Products.ProductUzb", "ProductUzb")
                         .WithMany("attachments")
                         .HasForeignKey("ProductUzbId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("ProductEng");
+
+                    b.Navigation("ProductRus");
+
+                    b.Navigation("ProductUzb");
                 });
 
-            modelBuilder.Entity("VetTextShifo.Domain.Entities.ProductDetails.Comments", b =>
+            modelBuilder.Entity("VetTextShifo.Domain.Entities.ProductDetails.Comment", b =>
                 {
                     b.HasOne("VetTextShifo.Domain.Entities.ProductDetails.Products.ProductEng", null)
                         .WithMany("comments")
@@ -552,19 +577,28 @@ namespace VetTextShifo.Data.Migrations
                         .HasForeignKey("ProductUzbid");
                 });
 
-            modelBuilder.Entity("VetTextShifo.Domain.Entities.ProductDetails.Likes", b =>
-                {
-                    b.HasOne("VetTextShifo.Domain.Entities.Users.Customer", null)
-                        .WithMany("Likes")
-                        .HasForeignKey("Customerid");
-                });
-
             modelBuilder.Entity("VetTextShifo.Domain.Entities.Users.Order", b =>
                 {
                     b.HasOne("VetTextShifo.Domain.Entities.Users.Customer", null)
                         .WithMany("Orders")
-                        .HasForeignKey("CustomerId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .HasForeignKey("Customerid");
+                });
+
+            modelBuilder.Entity("VetTextShifo.Domain.Entities.ProductDetails.NewsModel.NewsModelRus", b =>
+                {
+                    b.Navigation("Attachment")
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("VetTextShifo.Domain.Entities.ProductDetails.NewsModelEng", b =>
+                {
+                    b.Navigation("Attachment")
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("VetTextShifo.Domain.Entities.ProductDetails.NewsModelUzb", b =>
+                {
+                    b.Navigation("Attachment")
                         .IsRequired();
                 });
 
@@ -591,8 +625,6 @@ namespace VetTextShifo.Data.Migrations
 
             modelBuilder.Entity("VetTextShifo.Domain.Entities.Users.Customer", b =>
                 {
-                    b.Navigation("Likes");
-
                     b.Navigation("Orders");
                 });
 #pragma warning restore 612, 618

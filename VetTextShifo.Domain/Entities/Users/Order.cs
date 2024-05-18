@@ -4,7 +4,6 @@ namespace VetTextShifo.Domain.Entities.Users;
 
 public class Order : Auditable
 {
-    public int CustomerId { get; set; }
     public string ProductModelName { get; set; }
     public string CustomerName { get; set; }
     public string CustomerNumber { get; set; }

@@ -8,9 +8,7 @@ namespace VetTextShifo.Application.Interfaces;
 
 public interface ICustomerService
 {
-    public Task<CustomerForView> CreateAsync(CustomerForCreateRequest request,
-        CancellationToken cancellationToken);
-    public Task<CustomerForView> UpdateAsync(int id, CustomerForUpdateRequest request,
+    public Task<CustomerForView> UpdateAsync(CustomerForUpdateRequest request,
         CancellationToken cancellation);
     public Task<bool> DeleteAsync(int id, CancellationToken cancellationToken);
     public Task<CustomerForView> GetAsync(Expression<Func<Customer,bool>> expression);
