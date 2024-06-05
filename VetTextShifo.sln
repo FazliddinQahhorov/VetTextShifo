@@ -3,15 +3,15 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.9.34607.119
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VetTextShifo.API", "VetTextShifo.API\VetTextShifo.API.csproj", "{AD30E0B6-27B8-4770-926F-A2120228EC21}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VetTextShifo.API", "VetTextShifo.API\VetTextShifo.API.csproj", "{AD30E0B6-27B8-4770-926F-A2120228EC21}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{FCC4F985-CCF9-4E84-8736-1184EDEE6FCE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VetTextShifo.Domain", "VetTextShifo.Domain\VetTextShifo.Domain.csproj", "{9AFB2E50-FD86-4E2A-8B88-F12D875DBBCD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VetTextShifo.Domain", "VetTextShifo.Domain\VetTextShifo.Domain.csproj", "{9AFB2E50-FD86-4E2A-8B88-F12D875DBBCD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VetTextShifo.Data", "VetTextShifo.Data\VetTextShifo.Data.csproj", "{DD98CEB8-A366-48F8-9577-98839FC37250}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VetTextShifo.Data", "VetTextShifo.Data\VetTextShifo.Data.csproj", "{DD98CEB8-A366-48F8-9577-98839FC37250}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VetTextShifo.Application", "VetTextShifo.Application\VetTextShifo.Application.csproj", "{77C8DFA0-4D68-4863-9CB5-C7BCCAB9226A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VetTextShifo.Application", "VetTextShifo.Application\VetTextShifo.Application.csproj", "{77C8DFA0-4D68-4863-9CB5-C7BCCAB9226A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

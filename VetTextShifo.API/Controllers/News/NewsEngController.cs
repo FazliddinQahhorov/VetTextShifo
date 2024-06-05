@@ -8,6 +8,7 @@ using VetTextShifo.Application.DTOs.Users.News.ForRequests;
 using VetTextShifo.Application.DTOs.Users.News.ForResponse;
 using VetTextShifo.Application.Exceptions;
 using VetTextShifo.Application.Interfaces;
+using VetTextShifo.Application.Services;
 using VetTextShifo.Domain.Entities.ProductDetails;
 
 namespace VetTextShifo.API.Controllers.News
@@ -18,19 +19,25 @@ namespace VetTextShifo.API.Controllers.News
     public class NewsEngController : ControllerBase
     {
         private readonly INewsService _newsService;
+        private readonly IWebHostEnvironment _webHostEnvironment;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public NewsEngController(INewsService newsService)
+
+        public NewsEngController(INewsService newsService, IWebHostEnvironment webHostEnvironment, IHttpContextAccessor httpContextAccessor)
         {
             _newsService = newsService;
+            _webHostEnvironment = webHostEnvironment;
+            _httpContextAccessor = httpContextAccessor;
         }
-
+        [Authorize]
         [HttpPost]
         public async Task<ActionResult<NewsForResponce>> CreatNewEng(NewsForRequest model,
             CancellationToken cancellation)
         {
             try
             {
-                return Ok(await _newsService.CreatAsync(1, model, cancellation));
+                var result = await _newsService.CreatAsync(1, model, cancellation);
+                return Ok(result);
             }
             catch (CustomException ex)
             {
@@ -72,7 +79,16 @@ namespace VetTextShifo.API.Controllers.News
         {
             try
             {
-                return Ok(await _newsService.GetAsync(1, p => p.id == id));
+                var result = await _newsService.GetAsync(1, p => p.id == id);
+
+                // Bazaviy URL ni olish
+                var request = _httpContextAccessor.HttpContext.Request;
+                var baseUrl = $"{request.Scheme}://{request.Host}{request.PathBase}";
+
+                var relativePath = result.Attachments.FilePath.Replace(_webHostEnvironment.WebRootPath, "").Replace("\\", "/");
+                result.Attachments.FilePath = $"{baseUrl}{relativePath}";
+            
+                return Ok(result);
             }
             catch (CustomException ex)
             {
@@ -97,7 +113,18 @@ namespace VetTextShifo.API.Controllers.News
             };
             try
             {
-                return Ok(await _newsService.GetAllAsync(1, products));
+                var result = await _newsService.GetAllAsync(1, products);
+
+                var request = _httpContextAccessor.HttpContext.Request;
+                var baseUrl = $"{request.Scheme}://{request.Host}{request.PathBase}";
+
+                foreach (var item in result)
+                {
+                    var relativePath = item.Attachments.FilePath.Replace(_webHostEnvironment.WebRootPath, "").Replace("\\", "/");
+                    item.Attachments.FilePath = $"{baseUrl}{relativePath}";
+                }
+
+                return Ok(result);
             }
             catch (CustomException ex)
             {

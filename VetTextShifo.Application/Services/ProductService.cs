@@ -96,8 +96,7 @@ public class ProductService : IProductService
         var productEng = await _repositoryEng.GetAsync(p => p.id == id);
         var productRus = await _repositoryRus.GetAsync(p => p.id == id);
         var productUzb = await _repositoryUzb.GetAsync(p => p.id == id);
-        var folderName = "Resources";
-        var pathToSave = Path.Combine(Directory.GetCurrentDirectory(), folderName);
+        var pathToSave = Path.GetFullPath("wwwroot\\Upload\\Products");
         var files = await _attachmentRepository.GetAll().
             Where(p => p.ProductEngId == productEng.id).
             ToListAsync();
@@ -157,8 +156,8 @@ public class ProductService : IProductService
                 return soretedListEng;
                 break;
             case 2:
-                var productsRus = _repositoryEng.GetAll().
-                   ToPagedListProductEng(@params)
+                var productsRus = _repositoryRus.GetAll().
+                   ToPagedListProductRus(@params)
                    .ToList();
                 var soretedListRus = new List<ProductForMainView>();
 
@@ -187,8 +186,8 @@ public class ProductService : IProductService
                 return soretedListRus;
                 break;
             case 3:
-                var productsUzb = _repositoryEng.GetAll().
-                   ToPagedListProductEng(@params)
+                var productsUzb = _repositoryUzb.GetAll().
+                   ToPagedListProductUzb(@params)
                    .ToList();
                 var soretedListUzb = new List<ProductForMainView>();
 

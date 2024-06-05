@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage;
 using VetTextShifo.Domain.Entities;
 using VetTextShifo.Domain.Entities.Attachments;
 using VetTextShifo.Domain.Entities.ProductDetails;
@@ -12,7 +13,7 @@ public class AppDbContext : DbContext
 {
     public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) 
     {
-        Database.Migrate();
+       Database.Migrate();
     }
 
     DbSet<AttachmentModel> AttachmentProducts { get; set; }

@@ -91,8 +91,7 @@ public class NewsService : INewsService
             throw new CustomException(400, "Product not found!");
         }
 
-        var folderName = "Resources";
-        var pathToSave = Path.Combine(Directory.GetCurrentDirectory(), folderName);
+        var pathToSave = Path.GetFullPath("wwwroot\\Upload\\News");
 
         var file = await _fileForNewsService.GetForByIdImage(id, 1);
 
@@ -131,6 +130,7 @@ public class NewsService : INewsService
                     var image = await _fileForNewsService.GetForByIdImage(item.Id, languageId);
                     item.Attachments = image;
                 }
+               
                 return NewsEngMap;
                 break;
             case 2:

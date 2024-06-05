@@ -12,8 +12,8 @@ using VetTextShifo.Data.DbContexts;
 namespace VetTextShifo.Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20240505201132_fixedingda")]
-    partial class fixedingda
+    [Migration("20240527154401_first")]
+    partial class first
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -318,6 +318,9 @@ namespace VetTextShifo.Data.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<int>("Rating")
+                        .HasColumnType("integer");
+
                     b.Property<bool>("Service")
                         .HasColumnType("boolean");
 
@@ -375,6 +378,9 @@ namespace VetTextShifo.Data.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<int>("Rating")
+                        .HasColumnType("integer");
+
                     b.Property<bool>("Service")
                         .HasColumnType("boolean");
 
@@ -431,6 +437,9 @@ namespace VetTextShifo.Data.Migrations
                     b.Property<string>("Produced")
                         .IsRequired()
                         .HasColumnType("text");
+
+                    b.Property<int>("Rating")
+                        .HasColumnType("integer");
 
                     b.Property<bool>("Service")
                         .HasColumnType("boolean");

@@ -9,5 +9,5 @@ public class NewsForResponce
     public string Title { get; set; }
     public string Description { get; set; }
     public AttachmentForResponse Attachments { get; set; }
-    public DateTime Created { get; set; }
+    public DateTime CreateAt { get; set; }
 }

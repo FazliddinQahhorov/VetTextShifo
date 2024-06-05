@@ -7,7 +7,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace VetTextShifo.Data.Migrations
 {
     /// <inheritdoc />
-    public partial class fixedingda : Migration
+    public partial class first : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -119,7 +119,8 @@ namespace VetTextShifo.Data.Migrations
                     PaymentType = table.Column<string>(type: "text", nullable: false),
                     PaymentContract = table.Column<bool>(type: "boolean", nullable: false),
                     Description = table.Column<string>(type: "text", nullable: false),
-                    LikeCount = table.Column<int>(type: "integer", nullable: false)
+                    LikeCount = table.Column<int>(type: "integer", nullable: false),
+                    Rating = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -142,7 +143,8 @@ namespace VetTextShifo.Data.Migrations
                     PaymentType = table.Column<string>(type: "text", nullable: false),
                     PaymentContract = table.Column<bool>(type: "boolean", nullable: false),
                     Description = table.Column<string>(type: "text", nullable: false),
-                    LikeCount = table.Column<int>(type: "integer", nullable: false)
+                    LikeCount = table.Column<int>(type: "integer", nullable: false),
+                    Rating = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -165,7 +167,8 @@ namespace VetTextShifo.Data.Migrations
                     PaymentType = table.Column<string>(type: "text", nullable: false),
                     PaymentContract = table.Column<bool>(type: "boolean", nullable: false),
                     Description = table.Column<string>(type: "text", nullable: false),
-                    LikeCount = table.Column<int>(type: "integer", nullable: false)
+                    LikeCount = table.Column<int>(type: "integer", nullable: false),
+                    Rating = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {

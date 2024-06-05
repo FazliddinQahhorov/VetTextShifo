@@ -23,7 +23,8 @@ namespace VetTextShifo.API.Controllers.Auth
             try
             {
                 var user = await userService.GetAsync(u => u.email == signIn.email);
-                if (user == null || user.password != signIn.password.Encrypt())
+                var cheackingPassword = signIn.password.Encrypt();
+                if (user == null || user.password != cheackingPassword)
                 {
                     throw new CustomException(404, "E-mail or Password is not correct");
 

@@ -1,4 +1,8 @@
-﻿using Microsoft.Extensions.DependencyInjection.Extensions;
+﻿using Microsoft.AspNetCore.Mvc.Infrastructure;
+using Microsoft.AspNetCore.Mvc.Routing;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.OpenApi.Models;
 using VetTextShifo.Application.Interfaces;
 using VetTextShifo.Application.Services;
@@ -10,7 +14,7 @@ namespace VetTextShifo.API.Extensions;
 
 public static class DependencyInjection
 {
-    public static void AddCustomService(this IServiceCollection services)
+    public static void AddCustomService(this IServiceCollection services,IConfiguration configuration)
     {
         services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
         services.AddScoped<IAdminService, AdminService>();
@@ -23,7 +27,15 @@ public static class DependencyInjection
         services.AddScoped<IOrderService, OrderService>();
         services.AddScoped<ICustomerService, CustomerService>();
         services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
-        
+        services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
+        services.AddScoped<IUrlHelper>(factory =>
+        {
+            var actionContext = factory.GetService<IActionContextAccessor>().ActionContext;
+            return new UrlHelper(actionContext);
+        });
+        services.Configure<AppSettings>(configuration.GetSection("AppSettings"));
+        services.AddScoped<IProductService, ProductService>();
+
     }
 
     public static void ConfigureSwagger(this IServiceCollection services)

@@ -16,12 +16,17 @@ namespace VetTextShifo.API.Controllers.News
     public class NewsRusController : ControllerBase
     {
         private readonly INewsService _newsService;
+        private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly IWebHostEnvironment _webHostEnvironment;
 
-        public NewsRusController(INewsService newsService)
+        public NewsRusController(INewsService newsService, IWebHostEnvironment webHostEnvironment, IHttpContextAccessor httpContextAccessor)
         {
             _newsService = newsService;
+            _webHostEnvironment = webHostEnvironment;
+            _httpContextAccessor = httpContextAccessor;
         }
 
+        [Authorize]
         [HttpPost]
         public async Task<ActionResult<NewsForResponce>> CreatNewEng(NewsForRequest model,
             CancellationToken cancellation)
@@ -71,7 +76,18 @@ namespace VetTextShifo.API.Controllers.News
         {
             try
             {
-                return Ok(await _newsService.GetAsync(2, null, p => p.id == id, null));
+                var result = await _newsService.GetAsync(2,null, p => p.id == id, null);
+
+                // Bazaviy URL ni olish
+                var request = _httpContextAccessor.HttpContext.Request;
+                var baseUrl = $"{request.Scheme}://{request.Host}{request.PathBase}";
+
+               
+                    var relativePath = result.Attachments.FilePath.Replace(_webHostEnvironment.WebRootPath, "").Replace("\\", "/");
+                    result.Attachments.FilePath = $"{baseUrl}{relativePath}";
+                
+
+                return Ok(result);
             }
             catch (CustomException ex)
             {
@@ -96,7 +112,18 @@ namespace VetTextShifo.API.Controllers.News
             };
             try
             {
-                return Ok(await _newsService.GetAllAsync(2, products));
+                var result = await _newsService.GetAllAsync(2, products);
+
+                var request = _httpContextAccessor.HttpContext.Request;
+                var baseUrl = $"{request.Scheme}://{request.Host}{request.PathBase}";
+
+                foreach (var item in result)
+                {
+                    var relativePath = item.Attachments.FilePath.Replace(_webHostEnvironment.WebRootPath, "").Replace("\\", "/");
+                    item.Attachments.FilePath = $"{baseUrl}{relativePath}";
+                }
+
+                return Ok(result);
             }
             catch (CustomException ex)
             {

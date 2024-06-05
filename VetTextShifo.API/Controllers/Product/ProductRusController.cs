@@ -17,12 +17,18 @@ namespace VetTextShifo.API.Controllers.Product
     public class ProductRusController : ControllerBase
     {
         private readonly IProductService _productService;
+        private readonly IWebHostEnvironment _webHostEnvironment;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public ProductRusController(IProductService productService)
+
+        public ProductRusController(IProductService productService, IWebHostEnvironment webHostEnvironment, IHttpContextAccessor httpContextAccessor)
         {
             _productService = productService;
+            _webHostEnvironment = webHostEnvironment;
+            _httpContextAccessor = httpContextAccessor;
         }
 
+        [Authorize]
         [HttpPost]
         public async Task<ActionResult<ProductByIdView>> CreatProductRus(ProductForCreate model,
             CancellationToken cancellation)
@@ -43,7 +49,7 @@ namespace VetTextShifo.API.Controllers.Product
             }
         }
 
-        [Authorize]
+        //[Authorize]
         [HttpPut]
         public async Task<ActionResult<bool>> UpdateProductRus(ProductForUpdate model,
             CancellationToken cancellation)
@@ -68,7 +74,19 @@ namespace VetTextShifo.API.Controllers.Product
         {
             try
             {
-                return Ok(await _productService.GetAsync(2, null,p => p.id == id , null));
+                var result = await _productService.GetAsync(2,null, p => p.id == id,null);
+
+                // Bazaviy URL ni olish
+                var request = _httpContextAccessor.HttpContext.Request;
+                var baseUrl = $"{request.Scheme}://{request.Host}{request.PathBase}";
+
+                foreach (var item in result.Files)
+                {
+                    var relativePath = item.FilePath.Replace(_webHostEnvironment.WebRootPath, "").Replace("\\", "/");
+                    item.FilePath = $"{baseUrl}{relativePath}";
+                }
+
+                return Ok(result);
             }
             catch (CustomException ex)
             {
@@ -91,53 +109,18 @@ namespace VetTextShifo.API.Controllers.Product
             };
             try
             {
-                return Ok(await _productService.GetAllAsync(2, products));
-            }
-            catch (CustomException ex)
-            {
-                // Agar CustomException yuzaga kelsa
-                return StatusCode(ex.Code, ex.Message);
-            }
-            catch (Exception ex)
-            {
-                // Agar metodda boshqa xatolik yuzaga kelsa
-                return StatusCode(500, "Serverda xatolik yuzaga keldi: " + ex.Message);
-            }
-        }
-        [HttpGet]
-        public async Task<ActionResult<List<ProductForMainView>>> GetAllProductByBrandNameRus(int pageSize,
-            int pageIndex,
-            string brandName)
-        {
-            var products = new PaginationParams
-            {
-                PageSize = pageSize,
-                PageIndex = pageIndex
-            };
-            try
-            {
-                return Ok(await _productService.GetBySortBrandName(2, products, brandName));
-            }
-            catch (CustomException ex)
-            {
-                // Agar CustomException yuzaga kelsa
-                return StatusCode(ex.Code, ex.Message);
-            }
-            catch (Exception ex)
-            {
-                // Agar metodda boshqa xatolik yuzaga kelsa
-                return StatusCode(500, "Serverda xatolik yuzaga keldi: " + ex.Message);
-            }
-        }
+                var result = await _productService.GetAllAsync(2, products);
 
-        [Authorize]
-        [HttpDelete]
-        public async Task<ActionResult<bool>> DeleteProductAll(int id,
-            CancellationToken cancellation)
-        {
-            try
-            {
-                return Ok(await _productService.DeleteAsync(id, cancellation));
+                var request = _httpContextAccessor.HttpContext.Request;
+                var baseUrl = $"{request.Scheme}://{request.Host}{request.PathBase}";
+
+                foreach (var item in result)
+                {
+                    var relativePath = item.FilePath.Replace(_webHostEnvironment.WebRootPath, "").Replace("\\", "/");
+                    item.FilePath = $"{baseUrl}{relativePath}";
+                }
+
+                return Ok(result);
             }
             catch (CustomException ex)
             {
@@ -150,6 +133,52 @@ namespace VetTextShifo.API.Controllers.Product
                 return StatusCode(500, "Serverda xatolik yuzaga keldi: " + ex.Message);
             }
         }
+        //[HttpGet]
+        //public async Task<ActionResult<List<ProductForMainView>>> GetAllProductByBrandNameRus(int pageSize,
+        //    int pageIndex,
+        //    string brandName)
+        //{
+        //    var products = new PaginationParams
+        //    {
+        //        PageSize = pageSize,
+        //        PageIndex = pageIndex
+        //    };
+        //    try
+        //    {
+        //        return Ok(await _productService.GetBySortBrandName(2, products, brandName));
+        //    }
+        //    catch (CustomException ex)
+        //    {
+        //        // Agar CustomException yuzaga kelsa
+        //        return StatusCode(ex.Code, ex.Message);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        // Agar metodda boshqa xatolik yuzaga kelsa
+        //        return StatusCode(500, "Serverda xatolik yuzaga keldi: " + ex.Message);
+        //    }
+        //}
+
+        //[Authorize]
+        //[HttpDelete]
+        //public async Task<ActionResult<bool>> DeleteProductAll(int id,
+        //    CancellationToken cancellation)
+        //{
+        //    try
+        //    {
+        //        return Ok(await _productService.DeleteAsync(id, cancellation));
+        //    }
+        //    catch (CustomException ex)
+        //    {
+        //        // Agar CustomException yuzaga kelsa
+        //        return StatusCode(ex.Code, ex.Message);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        // Agar metodda boshqa xatolik yuzaga kelsa
+        //        return StatusCode(500, "Serverda xatolik yuzaga keldi: " + ex.Message);
+        //    }
+        //}
     }
 }
 

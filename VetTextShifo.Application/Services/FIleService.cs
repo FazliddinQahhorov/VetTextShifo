@@ -35,7 +35,7 @@ namespace VetTextShifo.Application.Services
                     throw new Exception("Error: No file uploaded");
                 }
 
-                var folderName = "Resources";
+                var folderName = Path.GetFullPath("wwwroot\\Upload\\Products");
                 var pathToSave = Path.Combine(Directory.GetCurrentDirectory(), folderName);
 
                 if (!Directory.Exists(pathToSave))
@@ -73,14 +73,14 @@ namespace VetTextShifo.Application.Services
                 }
 
                 attachmentModel.Name = fileName;
-                attachmentModel.Path = Path.Combine("Resources", fileName);
+                attachmentModel.Path = Path.Combine("\\Upload\\Products", fileName);
 
                 await _repository.CreateAsync(attachmentModel);
                 await _repository.SaveChangesAsync(cancellationToken);
                 response.Add(new AttachmentForResponse
                 {
                     FileName = fileName,
-                    FilePath = Path.Combine("Resources", fileName)
+                    FilePath = Path.Combine("\\Upload\\Products", fileName)
                 });
             }
 
@@ -98,7 +98,7 @@ namespace VetTextShifo.Application.Services
                     return new AttachmentForResponse
                     {
                         FileName = responseEng.Name,
-                        FilePath = Path.Combine("Resources", responseEng.Name)
+                        FilePath = Path.Combine("\\Upload\\Products", responseEng.Name)
                     };
                     break;
                 case 2:
@@ -106,7 +106,7 @@ namespace VetTextShifo.Application.Services
                     return new AttachmentForResponse
                     {
                         FileName = responseRus.Name,
-                        FilePath = Path.Combine("Resources", responseRus.Name)
+                        FilePath = Path.Combine("\\Upload\\Products", responseRus.Name)
                     };
                     break;
                 case 3:
@@ -114,7 +114,7 @@ namespace VetTextShifo.Application.Services
                     return new AttachmentForResponse
                     {
                         FileName = responseUzb.Name,
-                        FilePath = Path.Combine("Resources", responseUzb.Name)
+                        FilePath = Path.Combine("\\Upload\\Products", responseUzb.Name)
                     };
                     break;
                 default:
@@ -136,7 +136,7 @@ namespace VetTextShifo.Application.Services
                         responseEng.Add(new AttachmentForResponse
                         {
                             FileName = item.Name,
-                            FilePath = Path.Combine("Resources", item.Name)
+                            FilePath = Path.Combine("\\Upload\\Products", item.Name)
                         });
                     }
                     return responseEng;
@@ -149,7 +149,7 @@ namespace VetTextShifo.Application.Services
                         responseRus.Add(new AttachmentForResponse
                         {
                             FileName = item.Name,
-                            FilePath = Path.Combine("Resources", item.Name)
+                            FilePath = Path.Combine("\\Upload\\Products", item.Name)
                         });
                     }
                     return responseRus;
@@ -162,7 +162,7 @@ namespace VetTextShifo.Application.Services
                         responseUzb.Add(new AttachmentForResponse
                         {
                             FileName = item.Name,
-                            FilePath = Path.Combine("Resources", item.Name)
+                            FilePath = Path.Combine("\\Upload\\Products", item.Name)
                         });
                     }
                     return responseUzb;

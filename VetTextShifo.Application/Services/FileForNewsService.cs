@@ -36,7 +36,7 @@ public class FileForNewsService : IFileForNewsService
             throw new Exception("Error: No file uploaded");
         }
 
-        var folderName = "Resources";
+        var folderName = Path.GetFullPath("wwwroot\\Upload\\News");
         var pathToSave = Path.Combine(Directory.GetCurrentDirectory(), folderName);
 
         if (!Directory.Exists(pathToSave))
@@ -74,7 +74,7 @@ public class FileForNewsService : IFileForNewsService
         }
 
         attachmentModel.Name = fileName;
-        attachmentModel.Path = Path.Combine("Resources", fileName);
+        attachmentModel.Path = Path.Combine("wwwroot\\Upload\\News", fileName);
 
         await _repository.CreateAsync(attachmentModel);
         await _repository.SaveChangesAsync(cancellationToken);
@@ -82,7 +82,7 @@ public class FileForNewsService : IFileForNewsService
         return new AttachmentForResponse
         {
             FileName = fileName,
-            FilePath = Path.Combine("Resources", fileName)
+            FilePath = Path.Combine("wwwroot\\Upload\\News", fileName)
         };
     }
 
@@ -95,7 +95,7 @@ public class FileForNewsService : IFileForNewsService
                 return new AttachmentForResponse
                 {
                     FileName = responseEng.Name,
-                    FilePath = Path.Combine("Resources", responseEng.Name)
+                    FilePath = Path.Combine("\\Upload\\News", responseEng.Name)
                 };
                 break;
             case 2:
@@ -103,7 +103,7 @@ public class FileForNewsService : IFileForNewsService
                 return new AttachmentForResponse
                 {
                     FileName = responseRus.Name,
-                    FilePath = Path.Combine("Resources", responseRus.Name)
+                    FilePath = Path.Combine("\\Upload\\News", responseRus.Name)
                 };
                 break;
             case 3:
@@ -111,7 +111,7 @@ public class FileForNewsService : IFileForNewsService
                 return new AttachmentForResponse
                 {
                     FileName = responseUzb.Name,
-                    FilePath = Path.Combine("Resources", responseUzb.Name)
+                    FilePath = Path.Combine("\\Upload\\News", responseUzb.Name)
                 };
                 break;
             default:
