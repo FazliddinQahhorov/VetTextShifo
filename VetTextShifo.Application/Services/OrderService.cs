@@ -28,13 +28,13 @@ public class OrderService : IOrderService
     public async Task<OrderForView> CreateOrder(OrderForRequest orderForCreate,
         CancellationToken cancellationToken)
     {
-        var order = await _orderRepository.GetAsync(p => p.CustomerNumber == orderForCreate.CustomerNumber &&
-                                                       p.ProductModelName == orderForCreate.ProductModelName);
+        //var order = await _orderRepository.GetAsync(p => p.CustomerNumber == orderForCreate.CustomerNumber &&
+        //                                               p.ProductModelName == orderForCreate.ProductModelName);
 
-        if (order != null)
-        {
-            throw new CustomException(400, "This order type already exists!");
-        }
+        //if (order != null)
+        //{
+        //    throw new CustomException(400, "This order type already exists!");
+        //}
 
         // Check if the customer exists
         var result = await _orderRepository.CreateAsync(_mapper.Map<Order>(orderForCreate));

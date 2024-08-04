@@ -11,7 +11,7 @@ namespace VetTextShifo.API.Controllers.Auth
 {
     [Route("api/[controller]/[action]")]
     [ApiController]
-    //[Authorize]
+    [Authorize]
     [EnableRateLimiting("fixed")]
     public class AdminController : ControllerBase
     {

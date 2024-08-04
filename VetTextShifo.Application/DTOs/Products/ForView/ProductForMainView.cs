@@ -12,6 +12,7 @@ public class ProductForMainView
     public string MadeIn { get; set; }
     public string Produced { get; set; }
     public string ExtraDevices { get; set; }
+    public string Description { get; set; }
     public string PaymentType { get; set; }
     public bool PaymentContract { get; set; }
     public int LikeCount { get; set; }

@@ -91,7 +91,7 @@ public class FileForNewsService : IFileForNewsService
         switch (languageId)
         {
             case 1:
-                var responseEng = _repository.GetAll().Where(p => p.NewsModelEngId == id).FirstOrDefault();
+                var responseEng = await _repository.GetAsync(p => p.NewsModelEngId == id);
                 return new AttachmentForResponse
                 {
                     FileName = responseEng.Name,
@@ -99,7 +99,7 @@ public class FileForNewsService : IFileForNewsService
                 };
                 break;
             case 2:
-                var responseRus = _repository.GetAll().Where(p => p.NewsModelRusId == id).FirstOrDefault();
+                var responseRus = await _repository.GetAsync(p => p.NewsModelRusId == id);
                 return new AttachmentForResponse
                 {
                     FileName = responseRus.Name,
@@ -107,7 +107,7 @@ public class FileForNewsService : IFileForNewsService
                 };
                 break;
             case 3:
-                var responseUzb = _repository.GetAll().Where(p => p.NewsModelUzbId == id).FirstOrDefault();
+                var responseUzb = await _repository.GetAsync(p => p.NewsModelUzbId == id);
                 return new AttachmentForResponse
                 {
                     FileName = responseUzb.Name,
